@@ -51,6 +51,8 @@ dataSources:
           handler: handleOpenShort
         - event: CloseShort(indexed address,uint256,address)
           handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
   - kind: ethereum/contract
     name: Airswap
     network: mainnet

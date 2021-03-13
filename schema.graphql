@@ -16,8 +16,10 @@ type Vault @entity {
   id: ID!
   name: String!
   symbol: String!
+  numDepositors: Int!
   totalPremiumEarned: BigInt!
   totalWithdrawalFee: BigInt!
+  depositors: [Bytes!]!
 }
 
 type VaultShortPosition @entity {
