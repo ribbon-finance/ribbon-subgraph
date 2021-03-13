@@ -1,9 +1,14 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   OpenShort,
   CloseShort
 } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
-import { VaultShortPosition, VaultOptionTrade } from "../generated/schema";
+import {
+  Vault,
+  VaultShortPosition,
+  VaultOptionTrade
+} from "../generated/schema";
+import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import { Otoken } from "../generated/RibbonOptionsVault/Otoken";
 import { Swap } from "../generated/Airswap/Airswap";
 
@@ -16,7 +21,14 @@ export function handleOpenShort(event: OpenShort): void {
     return;
   }
 
-  shortPosition.vault = event.transaction.to;
+  let vaultAddress = event.transaction.to.toHex();
+  let vault = Vault.load(vaultAddress);
+
+  if (vault == null) {
+    vault = newVault(vaultAddress);
+  }
+
+  shortPosition.vault = vaultAddress;
   shortPosition.option = optionAddress;
   shortPosition.depositAmount = event.params.depositAmount;
   shortPosition.initiatedBy = event.params.manager;
@@ -28,6 +40,18 @@ export function handleOpenShort(event: OpenShort): void {
   shortPosition.strikePrice = otoken.strikePrice();
 
   shortPosition.save();
+}
+
+function newVault(vaultAddress: string): Vault {
+  let vault = new Vault(vaultAddress);
+  let optionsVaultContract = RibbonOptionsVault.bind(
+    Address.fromString(vaultAddress)
+  );
+  vault.name = optionsVaultContract.name();
+  vault.symbol = optionsVaultContract.symbol();
+  vault.totalPremiumEarned = BigInt.fromI32(0);
+  vault.totalWithdrawalFee = BigInt.fromI32(0);
+  return vault;
 }
 
 export function handleCloseShort(event: CloseShort): void {
@@ -57,7 +81,7 @@ export function handleSwap(event: Swap): void {
   let premium = event.params.senderAmount;
 
   let optionTrade = new VaultOptionTrade(swapID);
-  optionTrade.vault = vault;
+  optionTrade.vault = vault.toHex();
   optionTrade.buyer = event.params.senderWallet;
   optionTrade.sellAmount = event.params.signerAmount;
   optionTrade.premium = event.params.senderAmount;
