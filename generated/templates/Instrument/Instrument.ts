@@ -717,6 +717,82 @@ export class BuyInstrumentCall__Outputs {
   }
 }
 
+export class BuyInstrument1Call extends ethereum.Call {
+  get inputs(): BuyInstrument1Call__Inputs {
+    return new BuyInstrument1Call__Inputs(this);
+  }
+
+  get outputs(): BuyInstrument1Call__Outputs {
+    return new BuyInstrument1Call__Outputs(this);
+  }
+}
+
+export class BuyInstrument1Call__Inputs {
+  _call: BuyInstrument1Call;
+
+  constructor(call: BuyInstrument1Call) {
+    this._call = call;
+  }
+
+  get params(): BuyInstrument1CallParamsStruct {
+    return this._call.inputValues[0].value.toTuple() as BuyInstrument1CallParamsStruct;
+  }
+}
+
+export class BuyInstrument1Call__Outputs {
+  _call: BuyInstrument1Call;
+
+  constructor(call: BuyInstrument1Call) {
+    this._call = call;
+  }
+
+  get positionID(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class BuyInstrument1CallParamsStruct extends ethereum.Tuple {
+  get callVenue(): i32 {
+    return this[0].toI32();
+  }
+
+  get putVenue(): i32 {
+    return this[1].toI32();
+  }
+
+  get paymentToken(): Address {
+    return this[2].toAddress();
+  }
+
+  get callStrikePrice(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get putStrikePrice(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this[5].toBigInt();
+  }
+
+  get callMaxCost(): BigInt {
+    return this[6].toBigInt();
+  }
+
+  get putMaxCost(): BigInt {
+    return this[7].toBigInt();
+  }
+
+  get callBuyData(): Bytes {
+    return this[8].toBytes();
+  }
+
+  get putBuyData(): Bytes {
+    return this[9].toBytes();
+  }
+}
+
 export class ExercisePositionCall extends ethereum.Call {
   get inputs(): ExercisePositionCall__Inputs {
     return new ExercisePositionCall__Inputs(this);

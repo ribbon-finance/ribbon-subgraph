@@ -447,4 +447,22 @@ export class VaultOptionTrade extends Entity {
   set premiumToken(value: Bytes) {
     this.set("premiumToken", Value.fromBytes(value));
   }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
+  get txhash(): Bytes {
+    let value = this.get("txhash");
+    return value.toBytes();
+  }
+
+  set txhash(value: Bytes) {
+    this.set("txhash", Value.fromBytes(value));
+  }
 }

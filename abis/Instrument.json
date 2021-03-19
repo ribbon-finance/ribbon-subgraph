@@ -545,6 +545,77 @@
   {
     "inputs": [
       {
+        "components": [
+          {
+            "internalType": "uint8",
+            "name": "callVenue",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "putVenue",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "paymentToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "callStrikePrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "putStrikePrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "callMaxCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "putMaxCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "callBuyData",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "putBuyData",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct IAggregatedOptionsInstrument.BuyInstrumentParams",
+        "name": "params",
+        "type": "tuple"
+      }
+    ],
+    "name": "buyInstrument",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "positionID",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "positionID",
         "type": "uint256"
