@@ -89,6 +89,8 @@ export function handleSwap(event: Swap): void {
   optionTrade.optionToken = event.params.signerToken;
   optionTrade.premiumToken = event.params.senderToken;
   optionTrade.vaultShortPosition = optionToken.toHex();
+  optionTrade.timestamp = event.block.timestamp;
+  optionTrade.txhash = event.transaction.hash;
   optionTrade.save();
 
   shortPosition.premiumEarned = shortPosition.premiumEarned.plus(premium);

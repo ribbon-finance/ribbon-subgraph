@@ -45,4 +45,6 @@ type VaultOptionTrade @entity {
   premium: BigInt!
   optionToken: Bytes!
   premiumToken: Bytes!
+  timestamp: BigInt!
+  txhash: Bytes!
 }
