@@ -1,0 +1,80 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RibbonFactory
+    network: kovan
+    source:
+      address: "0x5A53a1C73a8e7e91291817B2D04B4d8468DE172d"
+      abi: RibbonFactory
+      startBlock: 24019452
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/factory.ts
+      entities:
+        - Instrument
+      abis:
+        - name: RibbonFactory
+          file: ./abis/RibbonFactory.json
+        - name: Instrument
+          file: ./abis/Instrument.json
+      eventHandlers:
+        - event: InstrumentCreated(string,indexed address)
+          handler: handleNewInstrument
+        - event: InstrumentCreated(string,indexed address,indexed address)
+          handler: deprecatedHandleNewInstrument
+  - kind: ethereum/contract
+    name: RibbonOptionsVault
+    network: kovan
+    source:
+      address: "0x88729C2FFEE36Ec3b154750c28828ACC3956BdfE"
+      abi: RibbonOptionsVault
+      startBlock: 24050701
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+  - kind: ethereum/contract
+    name: Airswap
+    network: kovan
+    source:
+      address: "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f"
+      abi: Airswap
+      startBlock: 24050701
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultOptionTrade
+        - VaultTransaction
+      abis:
+        - name: Airswap
+          file: ./abis/Airswap.json
+      eventHandlers:
+        - event: Swap(indexed uint256,uint256,indexed address,uint256,uint256,address,indexed address,uint256,uint256,address,address,uint256,uint256,address)
+          handler: handleSwap
