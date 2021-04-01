@@ -19,7 +19,8 @@ type Vault @entity {
   totalPremiumEarned: BigInt!
   totalWithdrawalFee: BigInt!
   numDepositors: Int!
-  depositors: [VaultAccount!]! @derivedFrom(field: "vault")
+  depositors: [Bytes!]!
+  vaultAccounts: [VaultAccount!]! @derivedFrom(field: "vault")
 }
 
 type VaultShortPosition @entity {

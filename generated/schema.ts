@@ -216,13 +216,22 @@ export class Vault extends Entity {
     this.set("numDepositors", Value.fromI32(value));
   }
 
-  get depositors(): Array<string> {
+  get depositors(): Array<Bytes> {
     let value = this.get("depositors");
+    return value.toBytesArray();
+  }
+
+  set depositors(value: Array<Bytes>) {
+    this.set("depositors", Value.fromBytesArray(value));
+  }
+
+  get vaultAccounts(): Array<string> {
+    let value = this.get("vaultAccounts");
     return value.toStringArray();
   }
 
-  set depositors(value: Array<string>) {
-    this.set("depositors", Value.fromStringArray(value));
+  set vaultAccounts(value: Array<string>) {
+    this.set("vaultAccounts", Value.fromStringArray(value));
   }
 }
 

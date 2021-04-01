@@ -1,4 +1,4 @@
-import { Address, log } from "@graphprotocol/graph-ts";
+import { Address, Bytes, log } from "@graphprotocol/graph-ts";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import {
   BalanceUpdate,
@@ -7,16 +7,30 @@ import {
   VaultAccount
 } from "../generated/schema";
 
-// export function refreshAllAccountBalances(
-//   vaultAddress: Address,
-//   timestamp: number
-// ): void {
-//   let vault = Vault.load(vaultAddress.toHexString());
+export function refreshAllAccountBalances(
+  vaultAddress: Address,
+  timestamp: i32
+): void {
+  log.debug("trigger refresh", []);
+  let vault = Vault.load(vaultAddress.toHexString());
 
-//   if (vault != null) {
-//     vault.depositors;
-//   }
-// }
+  if (vault != null) {
+    for (let i = 0; i < vault.numDepositors; i++) {
+      let depositors = vault.depositors;
+      let depositorAddress = depositors[i];
+      if (depositorAddress != null) {
+        log.debug("refresh balance with premium {}", [
+          depositorAddress.toHexString()
+        ]);
+        triggerBalanceUpdate(
+          vaultAddress,
+          depositorAddress as Address,
+          timestamp
+        );
+      }
+    }
+  }
+}
 
 export function triggerBalanceUpdate(
   vaultAddress: Address,
@@ -61,6 +75,10 @@ export function createVaultAccount(
 
   let vaultAccount = VaultAccount.load(vaultAccountID);
   if (vaultAccount == null) {
+    let depositors = vault.depositors;
+    depositors.push(accountAddress);
+    vault.depositors = depositors;
+
     vault.numDepositors = vault.numDepositors + 1;
     vault.save();
 

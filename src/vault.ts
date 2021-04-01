@@ -15,7 +15,11 @@ import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOption
 import { Otoken } from "../generated/RibbonOptionsVault/Otoken";
 import { Swap } from "../generated/Airswap/Airswap";
 
-import { createVaultAccount, triggerBalanceUpdate } from "./accounts";
+import {
+  createVaultAccount,
+  refreshAllAccountBalances,
+  triggerBalanceUpdate
+} from "./accounts";
 
 export function handleOpenShort(event: OpenShort): void {
   let optionAddress = event.params.options;
@@ -49,6 +53,7 @@ function newVault(vaultAddress: string): Vault {
   vault.name = optionsVaultContract.name();
   vault.symbol = optionsVaultContract.symbol();
   vault.numDepositors = 0;
+  vault.depositors = [];
   vault.totalPremiumEarned = BigInt.fromI32(0);
   vault.totalWithdrawalFee = BigInt.fromI32(0);
   return vault;
@@ -63,8 +68,8 @@ export function handleCloseShort(event: CloseShort): void {
 }
 
 export function handleSwap(event: Swap): void {
-  let optionToken = event.params.signerToken;
-  let vaultAddress = event.params.signerWallet;
+  let optionToken = event.params.senderToken;
+  let vaultAddress = event.params.senderWallet;
 
   let shortPosition = VaultShortPosition.load(optionToken.toHex());
   let vault = Vault.load(vaultAddress.toHex());
@@ -86,11 +91,11 @@ export function handleSwap(event: Swap): void {
 
   let optionTrade = new VaultOptionTrade(swapID);
   optionTrade.vault = vaultAddress.toHex();
-  optionTrade.buyer = event.params.senderWallet;
-  optionTrade.sellAmount = event.params.signerAmount;
-  optionTrade.premium = event.params.senderAmount;
-  optionTrade.optionToken = event.params.signerToken;
-  optionTrade.premiumToken = event.params.senderToken;
+  optionTrade.buyer = event.params.signerWallet;
+  optionTrade.sellAmount = event.params.senderAmount;
+  optionTrade.premium = event.params.signerAmount;
+  optionTrade.optionToken = event.params.senderToken;
+  optionTrade.premiumToken = event.params.signerToken;
   optionTrade.vaultShortPosition = optionToken.toHex();
   optionTrade.timestamp = event.block.timestamp;
   optionTrade.txhash = event.transaction.hash;
@@ -101,6 +106,8 @@ export function handleSwap(event: Swap): void {
 
   vault.totalPremiumEarned = vault.totalPremiumEarned.plus(premium);
   vault.save();
+
+  refreshAllAccountBalances(vaultAddress, event.block.timestamp.toI32());
 }
 
 export function handleDeposit(event: Deposit): void {

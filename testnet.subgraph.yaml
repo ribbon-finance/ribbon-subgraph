@@ -55,6 +55,8 @@ dataSources:
       abis:
         - name: Airswap
           file: ./abis/Airswap.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Swap(indexed uint256,uint256,indexed address,uint256,uint256,address,indexed address,uint256,uint256,address,address,uint256,uint256,address)
           handler: handleSwap
