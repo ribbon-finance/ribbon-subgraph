@@ -9,14 +9,13 @@ import {
   Vault,
   VaultShortPosition,
   VaultOptionTrade,
-  VaultTransaction,
-  VaultAccount
+  VaultTransaction
 } from "../generated/schema";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import { Otoken } from "../generated/RibbonOptionsVault/Otoken";
 import { Swap } from "../generated/Airswap/Airswap";
 
-import { triggerBalanceUpdate } from "./accounts";
+import { createVaultAccount, triggerBalanceUpdate } from "./accounts";
 
 export function handleOpenShort(event: OpenShort): void {
   let optionAddress = event.params.options;
@@ -52,7 +51,6 @@ function newVault(vaultAddress: string): Vault {
   vault.numDepositors = 0;
   vault.totalPremiumEarned = BigInt.fromI32(0);
   vault.totalWithdrawalFee = BigInt.fromI32(0);
-  vault.depositors = [];
   return vault;
 }
 
@@ -114,16 +112,10 @@ export function handleDeposit(event: Deposit): void {
 
   if (vault == null) {
     vault = newVault(vaultAddress);
+    vault.save();
   }
 
-  let vaultAccountID = vaultAddress + "-" + event.params.account.toHexString();
-  let vaultAccount = VaultAccount.load(vaultAccountID);
-  if (vaultAccount == null) {
-    vault.numDepositors = vault.numDepositors + 1;
-    vaultAccount.vault = vaultAddress;
-    vaultAccount.account = event.params.account.toHexString();
-    vaultAccount.save();
-  }
+  createVaultAccount(event.transaction.to as Address, event.params.account);
 
   let txid =
     vaultAddress +
@@ -143,11 +135,11 @@ export function handleDeposit(event: Deposit): void {
     BigInt.fromI32(0) // zero fees on deposit
   );
 
-  triggerBalanceUpdate(
-    event.transaction.to as Address,
-    event.params.account,
-    event.block.timestamp.toI32()
-  );
+  // triggerBalanceUpdate(
+  //   event.transaction.to as Address,
+  //   event.params.account,
+  //   event.block.timestamp.toI32()
+  // );
 }
 
 export function handleWithdraw(event: Withdraw): void {
@@ -181,11 +173,11 @@ export function handleWithdraw(event: Withdraw): void {
     event.params.fee
   );
 
-  triggerBalanceUpdate(
-    event.transaction.to as Address,
-    event.params.account,
-    event.block.timestamp.toI32()
-  );
+  // triggerBalanceUpdate(
+  //   event.transaction.to as Address,
+  //   event.params.account,
+  //   event.block.timestamp.toI32()
+  // );
 }
 
 function newTransaction(

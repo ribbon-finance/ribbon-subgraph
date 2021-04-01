@@ -1,6 +1,11 @@
 import { Address } from "@graphprotocol/graph-ts";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
-import { BalanceUpdate, Account, Vault } from "../generated/schema";
+import {
+  BalanceUpdate,
+  Account,
+  Vault,
+  VaultAccount
+} from "../generated/schema";
 
 // export function refreshAllAccountBalances(
 //   vaultAddress: Address,
@@ -37,4 +42,27 @@ export function triggerBalanceUpdate(
   update.timestamp = timestamp;
   update.balance = accountBalance;
   update.save();
+}
+
+export function createVaultAccount(
+  vaultAddress: Address,
+  accountAddress: Address
+): void {
+  let vault = Vault.load(vaultAddress.toHexString());
+  let vaultAccountID =
+    vaultAddress.toHexString() + "-" + accountAddress.toHexString();
+
+  let vaultAccount = VaultAccount.load(vaultAccountID);
+  if (vaultAccount == null) {
+    vault.numDepositors = vault.numDepositors + 1;
+    vault.save();
+
+    let account = new Account(accountAddress.toHexString());
+    account.save();
+
+    vaultAccount = new VaultAccount(vaultAccountID);
+    vaultAccount.vault = vaultAddress.toHexString();
+    vaultAccount.account = accountAddress.toHexString();
+    vaultAccount.save();
+  }
 }

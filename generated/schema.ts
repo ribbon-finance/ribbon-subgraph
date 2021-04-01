@@ -189,15 +189,6 @@ export class Vault extends Entity {
     this.set("symbol", Value.fromString(value));
   }
 
-  get numDepositors(): i32 {
-    let value = this.get("numDepositors");
-    return value.toI32();
-  }
-
-  set numDepositors(value: i32) {
-    this.set("numDepositors", Value.fromI32(value));
-  }
-
   get totalPremiumEarned(): BigInt {
     let value = this.get("totalPremiumEarned");
     return value.toBigInt();
@@ -214,6 +205,15 @@ export class Vault extends Entity {
 
   set totalWithdrawalFee(value: BigInt) {
     this.set("totalWithdrawalFee", Value.fromBigInt(value));
+  }
+
+  get numDepositors(): i32 {
+    let value = this.get("numDepositors");
+    return value.toI32();
+  }
+
+  set numDepositors(value: i32) {
+    this.set("numDepositors", Value.fromI32(value));
   }
 
   get depositors(): Array<string> {
