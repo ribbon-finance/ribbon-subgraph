@@ -5,6 +5,9 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ kenchangh/ribbon-finance",
+    "codegen-testnet": "graph codegen testnet.subgraph.yaml",
+    "build-testnet": "graph build testnet.subgraph.yaml",
+    "deploy-testnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ kenchangh/ribbon-finance-kovan testnet.subgraph.yaml",
     "create-local": "graph create --node http://localhost:8020/ kenchangh/ribbon-finance",
     "remove-local": "graph remove --node http://localhost:8020/ kenchangh/ribbon-finance",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 kenchangh/RibbonFinance"

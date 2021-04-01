@@ -216,13 +216,13 @@ export class Vault extends Entity {
     this.set("totalWithdrawalFee", Value.fromBigInt(value));
   }
 
-  get depositors(): Array<Bytes> {
+  get depositors(): Array<string> {
     let value = this.get("depositors");
-    return value.toBytesArray();
+    return value.toStringArray();
   }
 
-  set depositors(value: Array<Bytes>) {
-    this.set("depositors", Value.fromBytesArray(value));
+  set depositors(value: Array<string>) {
+    this.set("depositors", Value.fromStringArray(value));
   }
 }
 
@@ -558,5 +558,152 @@ export class VaultTransaction extends Entity {
 
   set fee(value: BigInt) {
     this.set("fee", Value.fromBigInt(value));
+  }
+}
+
+export class VaultAccount extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save VaultAccount entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save VaultAccount entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("VaultAccount", id.toString(), this);
+  }
+
+  static load(id: string): VaultAccount | null {
+    return store.get("VaultAccount", id) as VaultAccount | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get vault(): string {
+    let value = this.get("vault");
+    return value.toString();
+  }
+
+  set vault(value: string) {
+    this.set("vault", Value.fromString(value));
+  }
+
+  get account(): string {
+    let value = this.get("account");
+    return value.toString();
+  }
+
+  set account(value: string) {
+    this.set("account", Value.fromString(value));
+  }
+}
+
+export class Account extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Account entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Account entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Account", id.toString(), this);
+  }
+
+  static load(id: string): Account | null {
+    return store.get("Account", id) as Account | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+}
+
+export class BalanceUpdate extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save BalanceUpdate entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save BalanceUpdate entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("BalanceUpdate", id.toString(), this);
+  }
+
+  static load(id: string): BalanceUpdate | null {
+    return store.get("BalanceUpdate", id) as BalanceUpdate | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get vault(): string {
+    let value = this.get("vault");
+    return value.toString();
+  }
+
+  set vault(value: string) {
+    this.set("vault", Value.fromString(value));
+  }
+
+  get account(): string {
+    let value = this.get("account");
+    return value.toString();
+  }
+
+  set account(value: string) {
+    this.set("account", Value.fromString(value));
+  }
+
+  get timestamp(): i32 {
+    let value = this.get("timestamp");
+    return value.toI32();
+  }
+
+  set timestamp(value: i32) {
+    this.set("timestamp", Value.fromI32(value));
+  }
+
+  get balance(): BigInt {
+    let value = this.get("balance");
+    return value.toBigInt();
+  }
+
+  set balance(value: BigInt) {
+    this.set("balance", Value.fromBigInt(value));
   }
 }

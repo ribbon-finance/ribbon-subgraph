@@ -9,11 +9,14 @@ import {
   Vault,
   VaultShortPosition,
   VaultOptionTrade,
-  VaultTransaction
+  VaultTransaction,
+  VaultAccount
 } from "../generated/schema";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import { Otoken } from "../generated/RibbonOptionsVault/Otoken";
 import { Swap } from "../generated/Airswap/Airswap";
+
+import { triggerBalanceUpdate } from "./accounts";
 
 export function handleOpenShort(event: OpenShort): void {
   let optionAddress = event.params.options;
@@ -112,11 +115,15 @@ export function handleDeposit(event: Deposit): void {
   if (vault == null) {
     vault = newVault(vaultAddress);
   }
-  let depositors = vault.depositors;
-  depositors.push(event.params.account);
-  vault.depositors = depositors;
-  vault.numDepositors = depositors.length;
-  vault.save();
+
+  let vaultAccountID = vaultAddress + "-" + event.params.account.toHexString();
+  let vaultAccount = VaultAccount.load(vaultAccountID);
+  if (vaultAccount == null) {
+    vault.numDepositors = vault.numDepositors + 1;
+    vaultAccount.vault = vaultAddress;
+    vaultAccount.account = event.params.account.toHexString();
+    vaultAccount.save();
+  }
 
   let txid =
     vaultAddress +
@@ -134,6 +141,12 @@ export function handleDeposit(event: Deposit): void {
     event.block.timestamp,
     event.params.amount,
     BigInt.fromI32(0) // zero fees on deposit
+  );
+
+  triggerBalanceUpdate(
+    event.transaction.to as Address,
+    event.params.account,
+    event.block.timestamp.toI32()
   );
 }
 
@@ -166,6 +179,12 @@ export function handleWithdraw(event: Withdraw): void {
     event.block.timestamp,
     event.params.amount,
     event.params.fee
+  );
+
+  triggerBalanceUpdate(
+    event.transaction.to as Address,
+    event.params.account,
+    event.block.timestamp.toI32()
   );
 }
 

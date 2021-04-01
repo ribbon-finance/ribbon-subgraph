@@ -13,17 +13,17 @@ type InstrumentPosition @entity {
 }
 
 type Vault @entity {
-  id: ID!
+  id: ID! # vault contract address
   name: String!
   symbol: String!
-  numDepositors: Int!
   totalPremiumEarned: BigInt!
   totalWithdrawalFee: BigInt!
-  depositors: [Bytes!]!
+  numDepositors: Int!
+  depositors: [VaultAccount!]! @derivedFrom(field: "vault")
 }
 
 type VaultShortPosition @entity {
-  id: ID!
+  id: ID! # option contract address
   vault: Vault!
   option: Bytes!
   depositAmount: BigInt!
@@ -37,7 +37,7 @@ type VaultShortPosition @entity {
 }
 
 type VaultOptionTrade @entity {
-  id: ID!
+  id: ID! # optionToken-txhash-logindex
   vault: Vault!
   vaultShortPosition: VaultShortPosition!
   buyer: Bytes!
@@ -58,4 +58,22 @@ type VaultTransaction @entity {
   timestamp: BigInt!
   amount: BigInt!
   fee: BigInt!
+}
+
+type VaultAccount @entity {
+  id: ID! # vaultAddress-accountAddress
+  vault: Vault!
+  account: Account!
+}
+
+type Account @entity {
+  id: ID! # Ethereum account address
+}
+
+type BalanceUpdate @entity {
+  id: ID! # accountAddress-timestamp
+  vault: Vault!
+  account: Account!
+  timestamp: Int!
+  balance: BigInt!
 }
