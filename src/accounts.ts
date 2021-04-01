@@ -1,4 +1,4 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, log } from "@graphprotocol/graph-ts";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import {
   BalanceUpdate,
@@ -34,14 +34,21 @@ export function triggerBalanceUpdate(
     account.save();
   }
 
-  let accountBalance = vaultContract.accountVaultBalance(accountAddress);
+  let callResult = vaultContract.try_accountVaultBalance(accountAddress);
 
-  let update = new BalanceUpdate(updateID);
-  update.vault = vaultID;
-  update.account = accountAddress.toHexString();
-  update.timestamp = timestamp;
-  update.balance = accountBalance;
-  update.save();
+  if (!callResult.reverted) {
+    let update = new BalanceUpdate(updateID);
+    update.vault = vaultID;
+    update.account = accountAddress.toHexString();
+    update.timestamp = timestamp;
+    update.balance = callResult.value;
+    update.save();
+  } else {
+    log.error("calling accountVaultBalance({}) on vault {}", [
+      accountAddress.toHexString(),
+      vaultAddress.toHexString()
+    ]);
+  }
 }
 
 export function createVaultAccount(

@@ -135,11 +135,11 @@ export function handleDeposit(event: Deposit): void {
     BigInt.fromI32(0) // zero fees on deposit
   );
 
-  // triggerBalanceUpdate(
-  //   event.transaction.to as Address,
-  //   event.params.account,
-  //   event.block.timestamp.toI32()
-  // );
+  triggerBalanceUpdate(
+    event.transaction.to as Address,
+    event.params.account,
+    event.block.timestamp.toI32()
+  );
 }
 
 export function handleWithdraw(event: Withdraw): void {
@@ -173,11 +173,11 @@ export function handleWithdraw(event: Withdraw): void {
     event.params.fee
   );
 
-  // triggerBalanceUpdate(
-  //   event.transaction.to as Address,
-  //   event.params.account,
-  //   event.block.timestamp.toI32()
-  // );
+  triggerBalanceUpdate(
+    event.transaction.to as Address,
+    event.params.account,
+    event.block.timestamp.toI32()
+  );
 }
 
 function newTransaction(
