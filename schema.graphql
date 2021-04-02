@@ -65,9 +65,9 @@ type VaultAccount @entity {
   id: ID! # vaultAddress-accountAddress
   vault: Vault!
   account: Bytes!
-  updateCounter: Int!
-  totalYieldEarned: BigInt!
-  totalDeposits: BigInt!
+  updateCounter: Int! # used internally to track BalanceUpdates
+  totalYieldEarned: BigInt! # Account's lifetime yield earned from the vault
+  totalDeposits: BigInt! # Account's total deposits into the vault
 }
 
 type BalanceUpdate @entity {
@@ -75,6 +75,6 @@ type BalanceUpdate @entity {
   vault: Vault!
   account: Bytes!
   timestamp: Int!
-  balance: BigInt!
-  yieldEarned: BigInt!
+  balance: BigInt! # Account's balance in the vault at a point in time
+  yieldEarned: BigInt! # Yield earned from a trade at a point in time
 }
