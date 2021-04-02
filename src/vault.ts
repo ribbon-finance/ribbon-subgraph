@@ -24,13 +24,13 @@ import {
 export function handleOpenShort(event: OpenShort): void {
   let optionAddress = event.params.options;
 
-  let shortPosition = new VaultShortPosition(optionAddress.toHex());
+  let shortPosition = new VaultShortPosition(optionAddress.toHexString());
 
   if (event.transaction.to == null) {
     return;
   }
 
-  let vaultAddress = event.transaction.to.toHex();
+  let vaultAddress = event.transaction.to.toHexString();
   shortPosition.vault = vaultAddress;
   shortPosition.option = optionAddress;
   shortPosition.depositAmount = event.params.depositAmount;
@@ -60,7 +60,9 @@ function newVault(vaultAddress: string): Vault {
 }
 
 export function handleCloseShort(event: CloseShort): void {
-  let shortPosition = VaultShortPosition.load(event.params.options.toHex());
+  let shortPosition = VaultShortPosition.load(
+    event.params.options.toHexString()
+  );
   if (shortPosition != null) {
     shortPosition.closedAt = event.block.timestamp;
     shortPosition.save();
@@ -71,8 +73,8 @@ export function handleSwap(event: Swap): void {
   let optionToken = event.params.senderToken;
   let vaultAddress = event.params.senderWallet;
 
-  let shortPosition = VaultShortPosition.load(optionToken.toHex());
-  let vault = Vault.load(vaultAddress.toHex());
+  let shortPosition = VaultShortPosition.load(optionToken.toHexString());
+  let vault = Vault.load(vaultAddress.toHexString());
 
   if (shortPosition == null) {
     return;
@@ -82,21 +84,21 @@ export function handleSwap(event: Swap): void {
   }
 
   let swapID =
-    optionToken.toHex() +
+    optionToken.toHexString() +
     "-" +
-    event.transaction.hash.toHex() +
+    event.transaction.hash.toHexString() +
     "-" +
     event.transactionLogIndex.toString();
   let premium = event.params.senderAmount;
 
   let optionTrade = new VaultOptionTrade(swapID);
-  optionTrade.vault = vaultAddress.toHex();
+  optionTrade.vault = vaultAddress.toHexString();
   optionTrade.buyer = event.params.signerWallet;
   optionTrade.sellAmount = event.params.senderAmount;
   optionTrade.premium = event.params.signerAmount;
   optionTrade.optionToken = event.params.senderToken;
   optionTrade.premiumToken = event.params.signerToken;
-  optionTrade.vaultShortPosition = optionToken.toHex();
+  optionTrade.vaultShortPosition = optionToken.toHexString();
   optionTrade.timestamp = event.block.timestamp;
   optionTrade.txhash = event.transaction.hash;
   optionTrade.save();
@@ -114,7 +116,7 @@ export function handleDeposit(event: Deposit): void {
   if (event.transaction.to == null) {
     return;
   }
-  let vaultAddress = event.transaction.to.toHex();
+  let vaultAddress = event.transaction.to.toHexString();
   let vault = Vault.load(vaultAddress);
 
   if (vault == null) {
@@ -122,12 +124,17 @@ export function handleDeposit(event: Deposit): void {
     vault.save();
   }
 
-  createVaultAccount(event.transaction.to as Address, event.params.account);
+  let vaultAccount = createVaultAccount(
+    event.transaction.to as Address,
+    event.params.account
+  );
+  vaultAccount.totalDeposits = vaultAccount.totalDeposits + event.params.amount;
+  vaultAccount.save();
 
   let txid =
     vaultAddress +
     "-" +
-    event.transaction.hash.toHex() +
+    event.transaction.hash.toHexString() +
     "-" +
     event.transactionLogIndex.toString();
 
@@ -145,7 +152,8 @@ export function handleDeposit(event: Deposit): void {
   triggerBalanceUpdate(
     event.transaction.to as Address,
     event.params.account,
-    event.block.timestamp.toI32()
+    event.block.timestamp.toI32(),
+    false
   );
 }
 
@@ -154,7 +162,7 @@ export function handleWithdraw(event: Withdraw): void {
     return;
   }
 
-  let vaultAddress = event.transaction.to.toHex();
+  let vaultAddress = event.transaction.to.toHexString();
   let vault = Vault.load(vaultAddress);
 
   if (vault == null) {
@@ -162,10 +170,12 @@ export function handleWithdraw(event: Withdraw): void {
     vault.save();
   }
 
+  createVaultAccount(event.transaction.to as Address, event.params.account);
+
   let txid =
     vaultAddress +
     "-" +
-    event.transaction.hash.toHex() +
+    event.transaction.hash.toHexString() +
     "-" +
     event.transactionLogIndex.toString();
 
@@ -183,7 +193,8 @@ export function handleWithdraw(event: Withdraw): void {
   triggerBalanceUpdate(
     event.transaction.to as Address,
     event.params.account,
-    event.block.timestamp.toI32()
+    event.block.timestamp.toI32(),
+    false
   );
 }
 

@@ -64,17 +64,17 @@ type VaultTransaction @entity {
 type VaultAccount @entity {
   id: ID! # vaultAddress-accountAddress
   vault: Vault!
-  account: Account!
-}
-
-type Account @entity {
-  id: ID! # Ethereum account address
+  account: Bytes!
+  updateCounter: Int!
+  totalYieldEarned: BigInt!
+  totalDeposits: BigInt!
 }
 
 type BalanceUpdate @entity {
   id: ID! # accountAddress-timestamp
   vault: Vault!
-  account: Account!
+  account: Bytes!
   timestamp: Int!
   balance: BigInt!
+  yieldEarned: BigInt!
 }

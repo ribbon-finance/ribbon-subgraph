@@ -609,44 +609,40 @@ export class VaultAccount extends Entity {
     this.set("vault", Value.fromString(value));
   }
 
-  get account(): string {
+  get account(): Bytes {
     let value = this.get("account");
-    return value.toString();
+    return value.toBytes();
   }
 
-  set account(value: string) {
-    this.set("account", Value.fromString(value));
-  }
-}
-
-export class Account extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
   }
 
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save Account entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save Account entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("Account", id.toString(), this);
+  get updateCounter(): i32 {
+    let value = this.get("updateCounter");
+    return value.toI32();
   }
 
-  static load(id: string): Account | null {
-    return store.get("Account", id) as Account | null;
+  set updateCounter(value: i32) {
+    this.set("updateCounter", Value.fromI32(value));
   }
 
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
+  get totalYieldEarned(): BigInt {
+    let value = this.get("totalYieldEarned");
+    return value.toBigInt();
   }
 
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
+  set totalYieldEarned(value: BigInt) {
+    this.set("totalYieldEarned", Value.fromBigInt(value));
+  }
+
+  get totalDeposits(): BigInt {
+    let value = this.get("totalDeposits");
+    return value.toBigInt();
+  }
+
+  set totalDeposits(value: BigInt) {
+    this.set("totalDeposits", Value.fromBigInt(value));
   }
 }
 
@@ -689,13 +685,13 @@ export class BalanceUpdate extends Entity {
     this.set("vault", Value.fromString(value));
   }
 
-  get account(): string {
+  get account(): Bytes {
     let value = this.get("account");
-    return value.toString();
+    return value.toBytes();
   }
 
-  set account(value: string) {
-    this.set("account", Value.fromString(value));
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
   }
 
   get timestamp(): i32 {
@@ -714,5 +710,14 @@ export class BalanceUpdate extends Entity {
 
   set balance(value: BigInt) {
     this.set("balance", Value.fromBigInt(value));
+  }
+
+  get yieldEarned(): BigInt {
+    let value = this.get("yieldEarned");
+    return value.toBigInt();
+  }
+
+  set yieldEarned(value: BigInt) {
+    this.set("yieldEarned", Value.fromBigInt(value));
   }
 }

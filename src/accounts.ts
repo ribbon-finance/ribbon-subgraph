@@ -1,11 +1,6 @@
-import { Address, Bytes, log } from "@graphprotocol/graph-ts";
+import { BigInt, Address, log } from "@graphprotocol/graph-ts";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
-import {
-  BalanceUpdate,
-  Account,
-  Vault,
-  VaultAccount
-} from "../generated/schema";
+import { BalanceUpdate, Vault, VaultAccount } from "../generated/schema";
 
 export function refreshAllAccountBalances(
   vaultAddress: Address,
@@ -25,7 +20,8 @@ export function refreshAllAccountBalances(
         triggerBalanceUpdate(
           vaultAddress,
           depositorAddress as Address,
-          timestamp
+          timestamp,
+          true
         );
       }
     }
@@ -35,28 +31,66 @@ export function refreshAllAccountBalances(
 export function triggerBalanceUpdate(
   vaultAddress: Address,
   accountAddress: Address,
-  timestamp: i32
+  timestamp: i32,
+  accruesYield: bool
 ): void {
   let vaultID = vaultAddress.toHexString();
-  let updateID =
-    vaultID + "-" + accountAddress.toHexString() + "-" + timestamp.toString();
 
   let vaultContract = RibbonOptionsVault.bind(vaultAddress);
 
-  let account = Account.load(accountAddress.toHexString());
-  if (account == null) {
-    account.save();
+  let vaultAccount = VaultAccount.load(
+    vaultAddress.toHexString() + "-" + accountAddress.toHexString()
+  );
+
+  if (vaultAccount == null) {
+    return;
   }
+
+  let prevUpdateCounter = vaultAccount.updateCounter;
+  let updateCounter = prevUpdateCounter + 1;
+
+  let updateID =
+    vaultAddress.toHexString() +
+    "-" +
+    accountAddress.toHexString() +
+    "-" +
+    updateCounter.toString();
 
   let callResult = vaultContract.try_accountVaultBalance(accountAddress);
 
   if (!callResult.reverted) {
+    let balance = callResult.value;
     let update = new BalanceUpdate(updateID);
     update.vault = vaultID;
-    update.account = accountAddress.toHexString();
+    update.account = accountAddress;
     update.timestamp = timestamp;
-    update.balance = callResult.value;
+    update.balance = balance;
+    update.yieldEarned = BigInt.fromI32(0);
+
+    if (accruesYield) {
+      let prevUpdateID =
+        vaultAddress.toHexString() +
+        "-" +
+        accountAddress.toHexString() +
+        "-" +
+        prevUpdateCounter.toString();
+
+      let prevUpdate = BalanceUpdate.load(prevUpdateID);
+      if (prevUpdate != null) {
+        let yieldEarned = balance.minus(prevUpdate.balance);
+
+        if (yieldEarned.gt(BigInt.fromI32(0))) {
+          update.yieldEarned = yieldEarned;
+          vaultAccount.totalYieldEarned = vaultAccount.totalYieldEarned.plus(
+            yieldEarned
+          );
+        }
+      }
+    }
     update.save();
+
+    vaultAccount.updateCounter = updateCounter;
+    vaultAccount.save();
   } else {
     log.error("calling accountVaultBalance({}) on vault {}", [
       accountAddress.toHexString(),
@@ -68,7 +102,7 @@ export function triggerBalanceUpdate(
 export function createVaultAccount(
   vaultAddress: Address,
   accountAddress: Address
-): void {
+): VaultAccount {
   let vault = Vault.load(vaultAddress.toHexString());
   let vaultAccountID =
     vaultAddress.toHexString() + "-" + accountAddress.toHexString();
@@ -82,12 +116,13 @@ export function createVaultAccount(
     vault.numDepositors = vault.numDepositors + 1;
     vault.save();
 
-    let account = new Account(accountAddress.toHexString());
-    account.save();
-
     vaultAccount = new VaultAccount(vaultAccountID);
     vaultAccount.vault = vaultAddress.toHexString();
-    vaultAccount.account = accountAddress.toHexString();
+    vaultAccount.account = accountAddress;
+    vaultAccount.totalDeposits = BigInt.fromI32(0);
+    vaultAccount.totalYieldEarned = BigInt.fromI32(0);
+    vaultAccount.updateCounter = 0;
     vaultAccount.save();
   }
+  return vaultAccount as VaultAccount;
 }
