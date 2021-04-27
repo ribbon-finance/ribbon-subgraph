@@ -3,7 +3,9 @@ import {
   OpenShort,
   CloseShort,
   Deposit,
-  Withdraw
+  Withdraw,
+  Transfer,
+  CapSet
 } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import {
   Vault,
@@ -194,6 +196,34 @@ export function handleWithdraw(event: Withdraw): void {
   );
 }
 
+export function handleTransfer(event: Transfer): void {
+  // Just skip if it's a new deposit or withdrawal
+  if (
+    event.params.from.toHexString() ==
+      "0x0000000000000000000000000000000000000000" ||
+    event.params.to.toHexString() ==
+      "0x0000000000000000000000000000000000000000"
+  ) {
+    return;
+  }
+
+  let vaultAccount = createVaultAccount(event.address, event.params.to);
+  vaultAccount.save();
+
+  triggerBalanceUpdate(
+    event.address,
+    event.params.from,
+    event.block.timestamp.toI32(),
+    false
+  );
+  triggerBalanceUpdate(
+    event.address,
+    event.params.to,
+    event.block.timestamp.toI32(),
+    false
+  );
+}
+
 function newTransaction(
   txid: string,
   type: string,
@@ -213,4 +243,12 @@ function newTransaction(
   transaction.amount = amount;
   transaction.fee = fee;
   transaction.save();
+}
+
+export function handleCapSet(event: CapSet): void {
+  let vault = Vault.load(event.address.toHexString());
+  if (vault != null) {
+    vault.cap = event.params.newCap;
+    vault.save();
+  }
 }
