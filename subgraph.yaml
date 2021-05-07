@@ -60,7 +60,7 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
         - event: CapSet(uint256,uint256,address)
-          handler: handleCapSetandleWithdraw
+          handler: handleCapSet
   - kind: ethereum/contract
     name: RibbonWBTCCoveredCall
     network: mainnet
@@ -95,7 +95,42 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
         - event: CapSet(uint256,uint256,address)
-          handler: handleCapSetandleWithdrawandleWithdraw
+          handler: handleCapSet
+  - kind: ethereum/contract
+    name: RibbonUSDCETHPutVault
+    network: mainnet
+    source:
+      address: "0x16772a7f4a3ca291C21B8AcE76F9332dDFfbb5Ef"
+      abi: RibbonOptionsVault
+      startBlock: 12369554
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSet
   - kind: ethereum/contract
     name: Airswap
     network: mainnet
