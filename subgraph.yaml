@@ -57,6 +57,10 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256,uint256)
           handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSetandleWithdraw
   - kind: ethereum/contract
     name: RibbonWBTCCoveredCall
     network: mainnet
@@ -88,6 +92,10 @@ dataSources:
           handler: handleDeposit
         - event: Withdraw(indexed address,uint256,uint256,uint256)
           handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSetandleWithdrawandleWithdraw
   - kind: ethereum/contract
     name: Airswap
     network: mainnet
