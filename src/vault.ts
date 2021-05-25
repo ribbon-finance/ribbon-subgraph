@@ -216,15 +216,45 @@ export function handleTransfer(event: Transfer): void {
     return;
   }
 
+  let vaultAddress = event.address.toHexString();
+  let txid =
+    vaultAddress +
+    "-" +
+    event.transaction.hash.toHexString() +
+    "-" +
+    event.transactionLogIndex.toString();
+
   let senderVaultAccount = createVaultAccount(event.address, event.params.from);
   senderVaultAccount.totalDeposits =
     senderVaultAccount.totalDeposits - event.params.value;
   senderVaultAccount.save();
 
+  newTransaction(
+    txid + "-T", // Indicate transfer
+    "transfer",
+    vaultAddress,
+    event.params.from,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.params.value,
+    BigInt.fromI32(0) // zero fees on transfer
+  );
+
   let receiverVaultAccount = createVaultAccount(event.address, event.params.to);
   receiverVaultAccount.totalDeposits =
     receiverVaultAccount.totalDeposits + event.params.value;
   receiverVaultAccount.save();
+
+  newTransaction(
+    txid + "-R", // Indicate receive
+    "receive",
+    vaultAddress,
+    event.params.to,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.params.value,
+    BigInt.fromI32(0) // zero fees on transfer
+  );
 
   triggerBalanceUpdate(
     event.address,
