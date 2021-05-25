@@ -74,7 +74,8 @@ type VaultAccount @entity {
   account: Bytes!
   updateCounter: Int! # used internally to track BalanceUpdates
   totalYieldEarned: BigInt! # Account's lifetime yield earned from the vault
-  totalDeposits: BigInt! # Account's total deposits into the vault
+  totalDeposits: BigInt! # Account's total deposits into the vault (Withdrawal as accounted)
+  totalBalance: BigInt! # To track the current balance, so we can caluclate the net profit/loss
 }
 
 type BalanceUpdate @entity {
@@ -84,5 +85,5 @@ type BalanceUpdate @entity {
   timestamp: Int!
   balance: BigInt! # Account's balance in the vault at a point in time
   yieldEarned: BigInt! # Yield earned from a trade at a point in time
-  isWithdraw: Boolean
+  isWithdraw: Boolean!
 }

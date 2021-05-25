@@ -731,6 +731,15 @@ export class VaultAccount extends Entity {
   set totalDeposits(value: BigInt) {
     this.set("totalDeposits", Value.fromBigInt(value));
   }
+
+  get totalBalance(): BigInt {
+    let value = this.get("totalBalance");
+    return value.toBigInt();
+  }
+
+  set totalBalance(value: BigInt) {
+    this.set("totalBalance", Value.fromBigInt(value));
+  }
 }
 
 export class BalanceUpdate extends Entity {

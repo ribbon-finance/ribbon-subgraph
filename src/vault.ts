@@ -216,8 +216,15 @@ export function handleTransfer(event: Transfer): void {
     return;
   }
 
-  let vaultAccount = createVaultAccount(event.address, event.params.to);
-  vaultAccount.save();
+  let senderVaultAccount = createVaultAccount(event.address, event.params.from);
+  senderVaultAccount.totalDeposits =
+    senderVaultAccount.totalDeposits - event.params.value;
+  senderVaultAccount.save();
+
+  let receiverVaultAccount = createVaultAccount(event.address, event.params.to);
+  receiverVaultAccount.totalDeposits =
+    receiverVaultAccount.totalDeposits + event.params.value;
+  receiverVaultAccount.save();
 
   triggerBalanceUpdate(
     event.address,

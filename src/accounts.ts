@@ -96,6 +96,7 @@ export function triggerBalanceUpdate(
     }
     update.save();
 
+    vaultAccount.totalBalance = balance;
     vaultAccount.updateCounter = updateCounter;
     vaultAccount.save();
   } else {
@@ -127,6 +128,7 @@ export function createVaultAccount(
     vaultAccount.vault = vaultAddress.toHexString();
     vaultAccount.account = accountAddress;
     vaultAccount.totalDeposits = BigInt.fromI32(0);
+    vaultAccount.totalBalance = BigInt.fromI32(0);
     vaultAccount.totalYieldEarned = BigInt.fromI32(0);
     vaultAccount.updateCounter = 0;
     vaultAccount.save();
