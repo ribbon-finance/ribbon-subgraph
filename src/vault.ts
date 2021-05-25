@@ -61,6 +61,7 @@ function newVault(vaultAddress: string): Vault {
 }
 
 export function handleCloseShort(event: CloseShort): void {
+  let vaultAddress = event.address;
   let shortPosition = VaultShortPosition.load(
     event.params.options.toHexString()
   );
@@ -72,6 +73,8 @@ export function handleCloseShort(event: CloseShort): void {
     shortPosition.closedAt = event.block.timestamp;
     shortPosition.closeTxhash = event.transaction.hash;
     shortPosition.save();
+
+    refreshAllAccountBalances(vaultAddress, event.block.timestamp.toI32());
   }
 }
 
@@ -153,6 +156,7 @@ export function handleDeposit(event: Deposit): void {
     event.address,
     event.params.account,
     event.block.timestamp.toI32(),
+    false,
     false
   );
 }
@@ -196,7 +200,8 @@ export function handleWithdraw(event: Withdraw): void {
     event.address,
     event.params.account,
     event.block.timestamp.toI32(),
-    false
+    false,
+    true
   );
 }
 
@@ -218,12 +223,14 @@ export function handleTransfer(event: Transfer): void {
     event.address,
     event.params.from,
     event.block.timestamp.toI32(),
-    false
+    false,
+    true
   );
   triggerBalanceUpdate(
     event.address,
     event.params.to,
     event.block.timestamp.toI32(),
+    false,
     false
   );
 }

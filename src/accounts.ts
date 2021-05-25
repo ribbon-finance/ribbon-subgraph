@@ -21,7 +21,8 @@ export function refreshAllAccountBalances(
           vaultAddress,
           depositorAddress as Address,
           timestamp,
-          true
+          true,
+          false
         );
       }
     }
@@ -32,7 +33,8 @@ export function triggerBalanceUpdate(
   vaultAddress: Address,
   accountAddress: Address,
   timestamp: i32,
-  accruesYield: bool
+  accruesYield: bool,
+  isWithdraw: bool
 ): void {
   let vaultID = vaultAddress.toHexString();
 
@@ -70,6 +72,7 @@ export function triggerBalanceUpdate(
     update.timestamp = timestamp;
     update.balance = balance;
     update.yieldEarned = BigInt.fromI32(0);
+    update.isWithdraw = isWithdraw;
 
     if (accruesYield) {
       let prevUpdateID =

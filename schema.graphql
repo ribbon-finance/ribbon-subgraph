@@ -84,4 +84,5 @@ type BalanceUpdate @entity {
   timestamp: Int!
   balance: BigInt! # Account's balance in the vault at a point in time
   yieldEarned: BigInt! # Yield earned from a trade at a point in time
+  isWithdraw: Boolean
 }

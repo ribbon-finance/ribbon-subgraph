@@ -807,4 +807,13 @@ export class BalanceUpdate extends Entity {
   set yieldEarned(value: BigInt) {
     this.set("yieldEarned", Value.fromBigInt(value));
   }
+
+  get isWithdraw(): boolean {
+    let value = this.get("isWithdraw");
+    return value.toBoolean();
+  }
+
+  set isWithdraw(value: boolean) {
+    this.set("isWithdraw", Value.fromBoolean(value));
+  }
 }
