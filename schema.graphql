@@ -87,3 +87,20 @@ type BalanceUpdate @entity {
   yieldEarned: BigInt! # Yield earned from a trade at a point in time
   isWithdraw: Boolean!
 }
+
+type VaultLiquidityMiningPool @entity {
+  id: ID!
+  numDepositors: Int!
+  depositors: [Bytes!]!
+  poolAccounts: [VaultLiquidityMiningPoolAccount!]! @derivedFrom(field: "pool")
+  totalSupply: BigInt! # totalSupply, represent pool size
+  totalRewardClaimed: BigInt! # Pool ifetime reward claimed
+}
+
+type VaultLiquidityMiningPoolAccount @entity {
+  id: ID! # vaultLiquidityMiningPoolAddress-accountAddress
+  pool: VaultLiquidityMiningPool!
+  account: Bytes!
+  totalRewardClaimed: BigInt! # Account's lifetime reward claimed
+  totalBalance: BigInt! # To track the current balance
+}

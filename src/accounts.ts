@@ -1,6 +1,12 @@
 import { BigInt, Address, log } from "@graphprotocol/graph-ts";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
-import { BalanceUpdate, Vault, VaultAccount } from "../generated/schema";
+import {
+  BalanceUpdate,
+  Vault,
+  VaultAccount,
+  VaultLiquidityMiningPool,
+  VaultLiquidityMiningPoolAccount
+} from "../generated/schema";
 
 export function refreshAllAccountBalances(
   vaultAddress: Address,
@@ -134,4 +140,31 @@ export function createVaultAccount(
     vaultAccount.save();
   }
   return vaultAccount as VaultAccount;
+}
+
+export function getOrCreateLiquidityMiningPoolAccount(
+  poolAddress: Address,
+  accountAddress: Address
+): VaultLiquidityMiningPoolAccount {
+  let poolAccountID =
+    poolAddress.toHexString() + "-" + accountAddress.toHexString();
+
+  let poolAccount = VaultLiquidityMiningPoolAccount.load(poolAccountID);
+  if (poolAccount == null) {
+    let pool = VaultLiquidityMiningPool.load(poolAddress.toHexString());
+    let depositors = pool.depositors;
+    depositors.push(accountAddress);
+    pool.depositors = depositors;
+
+    pool.numDepositors = pool.numDepositors + 1;
+    pool.save();
+
+    poolAccount = new VaultLiquidityMiningPoolAccount(poolAccountID);
+    poolAccount.pool = poolAddress.toHexString();
+    poolAccount.account = accountAddress;
+    poolAccount.totalRewardClaimed = BigInt.fromI32(0);
+    poolAccount.totalBalance = BigInt.fromI32(0);
+    poolAccount.save();
+  }
+  return poolAccount as VaultLiquidityMiningPoolAccount;
 }

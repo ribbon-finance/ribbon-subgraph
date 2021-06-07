@@ -826,3 +826,158 @@ export class BalanceUpdate extends Entity {
     this.set("isWithdraw", Value.fromBoolean(value));
   }
 }
+
+export class VaultLiquidityMiningPool extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save VaultLiquidityMiningPool entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save VaultLiquidityMiningPool entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("VaultLiquidityMiningPool", id.toString(), this);
+  }
+
+  static load(id: string): VaultLiquidityMiningPool | null {
+    return store.get(
+      "VaultLiquidityMiningPool",
+      id
+    ) as VaultLiquidityMiningPool | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get numDepositors(): i32 {
+    let value = this.get("numDepositors");
+    return value.toI32();
+  }
+
+  set numDepositors(value: i32) {
+    this.set("numDepositors", Value.fromI32(value));
+  }
+
+  get depositors(): Array<Bytes> {
+    let value = this.get("depositors");
+    return value.toBytesArray();
+  }
+
+  set depositors(value: Array<Bytes>) {
+    this.set("depositors", Value.fromBytesArray(value));
+  }
+
+  get poolAccounts(): Array<string> {
+    let value = this.get("poolAccounts");
+    return value.toStringArray();
+  }
+
+  set poolAccounts(value: Array<string>) {
+    this.set("poolAccounts", Value.fromStringArray(value));
+  }
+
+  get totalSupply(): BigInt {
+    let value = this.get("totalSupply");
+    return value.toBigInt();
+  }
+
+  set totalSupply(value: BigInt) {
+    this.set("totalSupply", Value.fromBigInt(value));
+  }
+
+  get totalRewardClaimed(): BigInt {
+    let value = this.get("totalRewardClaimed");
+    return value.toBigInt();
+  }
+
+  set totalRewardClaimed(value: BigInt) {
+    this.set("totalRewardClaimed", Value.fromBigInt(value));
+  }
+}
+
+export class VaultLiquidityMiningPoolAccount extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save VaultLiquidityMiningPoolAccount entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save VaultLiquidityMiningPoolAccount entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("VaultLiquidityMiningPoolAccount", id.toString(), this);
+  }
+
+  static load(id: string): VaultLiquidityMiningPoolAccount | null {
+    return store.get(
+      "VaultLiquidityMiningPoolAccount",
+      id
+    ) as VaultLiquidityMiningPoolAccount | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get pool(): string {
+    let value = this.get("pool");
+    return value.toString();
+  }
+
+  set pool(value: string) {
+    this.set("pool", Value.fromString(value));
+  }
+
+  get account(): Bytes {
+    let value = this.get("account");
+    return value.toBytes();
+  }
+
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
+  }
+
+  get totalRewardClaimed(): BigInt {
+    let value = this.get("totalRewardClaimed");
+    return value.toBigInt();
+  }
+
+  set totalRewardClaimed(value: BigInt) {
+    this.set("totalRewardClaimed", Value.fromBigInt(value));
+  }
+
+  get totalBalance(): BigInt {
+    let value = this.get("totalBalance");
+    return value.toBigInt();
+  }
+
+  set totalBalance(value: BigInt) {
+    this.set("totalBalance", Value.fromBigInt(value));
+  }
+}

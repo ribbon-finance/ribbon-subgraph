@@ -169,3 +169,103 @@ dataSources:
       eventHandlers:
         - event: Swap(indexed uint256,uint256,indexed address,uint256,uint256,address,indexed address,uint256,uint256,address,address,uint256,uint256,address)
           handler: handleSwap
+  - kind: ethereum/contract
+    name: RibbonETHCallLiquidityMining
+    network: kovan
+    source:
+      address: "0x79F653c6eD5e2054ee038F34A3cE7ecAa1d89084"
+      abi: RibbonStakingRewards
+      startBlock: 25252430
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+  - kind: ethereum/contract
+    name: RibbonWBTCCallLiquidityMining
+    network: kovan
+    source:
+      address: "0x210139dAa8125155b64c69701df6f4E03EcF89f1"
+      abi: RibbonStakingRewards
+      startBlock: 25252430
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+  - kind: ethereum/contract
+    name: RibbonETHPutLiquidityMining
+    network: kovan
+    source:
+      address: "0xa8A4bb7254210aADa78493c3034405C4B3140052"
+      abi: RibbonStakingRewards
+      startBlock: 25252430
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+  - kind: ethereum/contract
+    name: RibbonWBTCPutLiquidityMining
+    network: kovan
+    source:
+      address: "0xd5707Abde5366a5c2b9B490faf1f1e07B734a0a7"
+      abi: RibbonStakingRewards
+      startBlock: 25252430
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
