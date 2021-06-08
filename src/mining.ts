@@ -60,7 +60,8 @@ export function handleStaked(event: Staked): void {
   const pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
   const poolAccount = getOrCreateLiquidityMiningPoolAccount(
     event.address,
-    event.params.user
+    event.params.user,
+    pool
   );
 
   updateVaultLiquidityMiningAccountBalance(
@@ -77,7 +78,8 @@ export function handleWithdrawn(event: Withdrawn): void {
   const pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
   const poolAccount = getOrCreateLiquidityMiningPoolAccount(
     event.address,
-    event.params.user
+    event.params.user,
+    pool
   );
 
   updateVaultLiquidityMiningAccountBalance(
@@ -94,7 +96,8 @@ export function handleRewardPaid(event: RewardPaid): void {
   const pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
   const poolAccount = getOrCreateLiquidityMiningPoolAccount(
     event.address,
-    event.params.user
+    event.params.user,
+    pool
   );
 
   poolAccount.totalRewardClaimed =

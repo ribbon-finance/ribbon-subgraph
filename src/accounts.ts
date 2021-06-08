@@ -2,6 +2,8 @@ import { BigInt, Address, log } from "@graphprotocol/graph-ts";
 import { RibbonOptionsVault } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import {
   BalanceUpdate,
+  ERC20Token,
+  ERC20TokenAccount,
   Vault,
   VaultAccount,
   VaultLiquidityMiningPool,
@@ -144,14 +146,14 @@ export function createVaultAccount(
 
 export function getOrCreateLiquidityMiningPoolAccount(
   poolAddress: Address,
-  accountAddress: Address
+  accountAddress: Address,
+  pool: VaultLiquidityMiningPool
 ): VaultLiquidityMiningPoolAccount {
   let poolAccountID =
     poolAddress.toHexString() + "-" + accountAddress.toHexString();
 
   let poolAccount = VaultLiquidityMiningPoolAccount.load(poolAccountID);
   if (poolAccount == null) {
-    let pool = VaultLiquidityMiningPool.load(poolAddress.toHexString());
     let depositors = pool.depositors;
     depositors.push(accountAddress);
     pool.depositors = depositors;
@@ -167,4 +169,30 @@ export function getOrCreateLiquidityMiningPoolAccount(
     poolAccount.save();
   }
   return poolAccount as VaultLiquidityMiningPoolAccount;
+}
+
+export function getOrCreateTokenAccount(
+  tokenAddress: Address,
+  accountAddress: Address,
+  token: ERC20Token
+): ERC20TokenAccount {
+  let tokenAccountID =
+    tokenAddress.toHexString() + "-" + accountAddress.toHexString();
+
+  let tokenAccount = ERC20TokenAccount.load(tokenAccountID);
+  if (tokenAccount == null) {
+    let holders = token.holders;
+    holders.push(accountAddress);
+    token.holders = holders;
+
+    token.numHolders = token.numHolders + 1;
+    token.save();
+
+    tokenAccount = new ERC20TokenAccount(tokenAccountID);
+    tokenAccount.token = tokenAddress.toHexString();
+    tokenAccount.account = accountAddress;
+    tokenAccount.balance = BigInt.fromI32(0);
+    tokenAccount.save();
+  }
+  return tokenAccount as ERC20TokenAccount;
 }

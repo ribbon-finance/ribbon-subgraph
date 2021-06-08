@@ -981,3 +981,146 @@ export class VaultLiquidityMiningPoolAccount extends Entity {
     this.set("totalBalance", Value.fromBigInt(value));
   }
 }
+
+export class ERC20Token extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save ERC20Token entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save ERC20Token entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("ERC20Token", id.toString(), this);
+  }
+
+  static load(id: string): ERC20Token | null {
+    return store.get("ERC20Token", id) as ERC20Token | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get numHolders(): i32 {
+    let value = this.get("numHolders");
+    return value.toI32();
+  }
+
+  set numHolders(value: i32) {
+    this.set("numHolders", Value.fromI32(value));
+  }
+
+  get holders(): Array<Bytes> {
+    let value = this.get("holders");
+    return value.toBytesArray();
+  }
+
+  set holders(value: Array<Bytes>) {
+    this.set("holders", Value.fromBytesArray(value));
+  }
+
+  get tokenAccounts(): Array<string> {
+    let value = this.get("tokenAccounts");
+    return value.toStringArray();
+  }
+
+  set tokenAccounts(value: Array<string>) {
+    this.set("tokenAccounts", Value.fromStringArray(value));
+  }
+
+  get totalSupply(): BigInt {
+    let value = this.get("totalSupply");
+    return value.toBigInt();
+  }
+
+  set totalSupply(value: BigInt) {
+    this.set("totalSupply", Value.fromBigInt(value));
+  }
+}
+
+export class ERC20TokenAccount extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save ERC20TokenAccount entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save ERC20TokenAccount entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("ERC20TokenAccount", id.toString(), this);
+  }
+
+  static load(id: string): ERC20TokenAccount | null {
+    return store.get("ERC20TokenAccount", id) as ERC20TokenAccount | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    return value.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
+
+  get balance(): BigInt {
+    let value = this.get("balance");
+    return value.toBigInt();
+  }
+
+  set balance(value: BigInt) {
+    this.set("balance", Value.fromBigInt(value));
+  }
+
+  get account(): Bytes {
+    let value = this.get("account");
+    return value.toBytes();
+  }
+
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
+  }
+}

@@ -104,3 +104,20 @@ type VaultLiquidityMiningPoolAccount @entity {
   totalRewardClaimed: BigInt! # Account's lifetime reward claimed
   totalBalance: BigInt! # To track the current balance
 }
+
+type ERC20Token @entity {
+  id: ID! # token contract address
+  name: String!
+  symbol: String!
+  numHolders: Int!
+  holders: [Bytes!]!
+  tokenAccounts: [ERC20TokenAccount!]! @derivedFrom(field: "token")
+  totalSupply: BigInt!
+}
+
+type ERC20TokenAccount @entity {
+  id: ID! # ERC20TokenID-accountAddress
+  token: ERC20Token!
+  balance: BigInt!
+  account: Bytes!
+}
