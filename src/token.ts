@@ -42,7 +42,7 @@ export function handleTransfer(event: Transfer): void {
     event.params.from,
     token
   );
-  const receriverTokenAccount = getOrCreateTokenAccount(
+  const receiverTokenAccount = getOrCreateTokenAccount(
     event.address,
     event.params.to,
     token
@@ -56,6 +56,6 @@ export function handleTransfer(event: Transfer): void {
   updateTokenAccountBalance(
     event.address,
     event.params.to,
-    receriverTokenAccount
+    receiverTokenAccount
   );
 }
