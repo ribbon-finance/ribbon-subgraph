@@ -740,6 +740,24 @@ export class VaultAccount extends Entity {
   set totalBalance(value: BigInt) {
     this.set("totalBalance", Value.fromBigInt(value));
   }
+
+  get totalStakedShares(): BigInt {
+    let value = this.get("totalStakedShares");
+    return value.toBigInt();
+  }
+
+  set totalStakedShares(value: BigInt) {
+    this.set("totalStakedShares", Value.fromBigInt(value));
+  }
+
+  get totalStakedBalance(): BigInt {
+    let value = this.get("totalStakedBalance");
+    return value.toBigInt();
+  }
+
+  set totalStakedBalance(value: BigInt) {
+    this.set("totalStakedBalance", Value.fromBigInt(value));
+  }
 }
 
 export class BalanceUpdate extends Entity {
@@ -824,6 +842,15 @@ export class BalanceUpdate extends Entity {
 
   set isWithdraw(value: boolean) {
     this.set("isWithdraw", Value.fromBoolean(value));
+  }
+
+  get stakedBalance(): BigInt {
+    let value = this.get("stakedBalance");
+    return value.toBigInt();
+  }
+
+  set stakedBalance(value: BigInt) {
+    this.set("stakedBalance", Value.fromBigInt(value));
   }
 }
 

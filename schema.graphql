@@ -76,6 +76,8 @@ type VaultAccount @entity {
   totalYieldEarned: BigInt! # Account's lifetime yield earned from the vault
   totalDeposits: BigInt! # Account's total deposits into the vault (Withdrawal as accounted)
   totalBalance: BigInt! # To track the current balance, so we can caluclate the net profit/loss
+  totalStakedShares: BigInt!
+  totalStakedBalance: BigInt!
 }
 
 type BalanceUpdate @entity {
@@ -86,6 +88,7 @@ type BalanceUpdate @entity {
   balance: BigInt! # Account's balance in the vault at a point in time
   yieldEarned: BigInt! # Yield earned from a trade at a point in time
   isWithdraw: Boolean!
+  stakedBalance: BigInt!
 }
 
 type VaultLiquidityMiningPool @entity {

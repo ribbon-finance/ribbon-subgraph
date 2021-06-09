@@ -22,6 +22,7 @@ import {
   refreshAllAccountBalances,
   triggerBalanceUpdate
 } from "./accounts";
+import { isMiningPool } from "./data/constant";
 
 export function handleOpenShort(event: OpenShort): void {
   let optionAddress = event.params.options;
@@ -216,6 +217,14 @@ export function handleTransfer(event: Transfer): void {
     return;
   }
 
+  let type = "transfer";
+
+  if (isMiningPool(event.params.to)) {
+    type = "stake";
+  } else if (isMiningPool(event.params.from)) {
+    type = "unstake";
+  }
+
   let vaultAddress = event.address.toHexString();
   let txid =
     vaultAddress +
@@ -225,13 +234,21 @@ export function handleTransfer(event: Transfer): void {
     event.transactionLogIndex.toString();
 
   let senderVaultAccount = createVaultAccount(event.address, event.params.from);
-  senderVaultAccount.totalDeposits =
-    senderVaultAccount.totalDeposits - event.params.value;
+
+  switch (type as u32) {
+    case "stake" as u32:
+      senderVaultAccount.totalStakedShares =
+        senderVaultAccount.totalStakedShares + event.params.value;
+      break;
+    default:
+      senderVaultAccount.totalDeposits =
+        senderVaultAccount.totalDeposits - event.params.value;
+  }
   senderVaultAccount.save();
 
   newTransaction(
     txid + "-T", // Indicate transfer
-    "transfer",
+    type === "stake" ? "stake" : "transfer",
     vaultAddress,
     event.params.from,
     event.transaction.hash,
@@ -241,13 +258,21 @@ export function handleTransfer(event: Transfer): void {
   );
 
   let receiverVaultAccount = createVaultAccount(event.address, event.params.to);
-  receiverVaultAccount.totalDeposits =
-    receiverVaultAccount.totalDeposits + event.params.value;
+
+  switch (type as u32) {
+    case "unstake" as u32:
+      receiverVaultAccount.totalStakedShares =
+        receiverVaultAccount.totalStakedShares - event.params.value;
+      break;
+    default:
+      receiverVaultAccount.totalDeposits =
+        receiverVaultAccount.totalDeposits + event.params.value;
+  }
   receiverVaultAccount.save();
 
   newTransaction(
     txid + "-R", // Indicate receive
-    "receive",
+    type === "unstake" ? "unstake" : "receive",
     vaultAddress,
     event.params.to,
     event.transaction.hash,
