@@ -73,15 +73,13 @@ export function triggerBalanceUpdate(
   const balanceCallResult = vaultContract.try_accountVaultBalance(
     accountAddress
   );
-  const stakeBalanceCallResult = vaultContract.try_withdrawAmountWithShares(
-    vaultAccount.totalStakedShares
-  );
 
-  if (!balanceCallResult.reverted && !stakeBalanceCallResult.reverted) {
+  if (!balanceCallResult.reverted) {
     // TODO: The yield still does not fully represent one that occured after staked, need more calculation in calculating yield in it as well. Still figuring out how to do it
 
     let stakeBalance =
-      stakeBalanceCallResult.value.value0 + stakeBalanceCallResult.value.value1;
+      (vaultAccount.totalStakedShares * vaultContract.totalBalance()) /
+      vaultContract.totalSupply();
     let balance = balanceCallResult.value + stakeBalance;
     let update = new BalanceUpdate(updateID);
     update.vault = vaultID;
