@@ -647,6 +647,15 @@ export class VaultTransaction extends Entity {
     this.set("amount", Value.fromBigInt(value));
   }
 
+  get underlyingAmount(): BigInt {
+    let value = this.get("underlyingAmount");
+    return value.toBigInt();
+  }
+
+  set underlyingAmount(value: BigInt) {
+    this.set("underlyingAmount", Value.fromBigInt(value));
+  }
+
   get fee(): BigInt {
     let value = this.get("fee");
     return value.toBigInt();

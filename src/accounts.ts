@@ -75,8 +75,6 @@ export function triggerBalanceUpdate(
   );
 
   if (!balanceCallResult.reverted) {
-    // TODO: The yield still does not fully represent one that occured after staked, need more calculation in calculating yield in it as well. Still figuring out how to do it
-
     let stakeBalance =
       (vaultAccount.totalStakedShares * vaultContract.totalBalance()) /
       vaultContract.totalSupply();

@@ -150,6 +150,7 @@ export function handleDeposit(event: Deposit): void {
     event.transaction.hash,
     event.block.timestamp,
     event.params.amount,
+    event.params.amount,
     BigInt.fromI32(0) // zero fees on deposit
   );
 
@@ -193,6 +194,7 @@ export function handleWithdraw(event: Withdraw): void {
     event.params.account,
     event.transaction.hash,
     event.block.timestamp,
+    event.params.amount,
     event.params.amount,
     event.params.fee
   );
@@ -246,6 +248,17 @@ export function handleTransfer(event: Transfer): void {
   }
   senderVaultAccount.save();
 
+  /**
+   * Calculate underlying amount
+   */
+  let underlyingAmount = event.params.value;
+  if (type === "stake" || type === "unstake") {
+    const vaultContract = RibbonOptionsVault.bind(event.address);
+    underlyingAmount =
+      (event.params.value * vaultContract.totalBalance()) /
+      vaultContract.totalSupply();
+  }
+
   newTransaction(
     txid + "-T", // Indicate transfer
     type === "stake" ? "stake" : "transfer",
@@ -254,6 +267,7 @@ export function handleTransfer(event: Transfer): void {
     event.transaction.hash,
     event.block.timestamp,
     event.params.value,
+    underlyingAmount,
     BigInt.fromI32(0) // zero fees on transfer
   );
 
@@ -278,6 +292,7 @@ export function handleTransfer(event: Transfer): void {
     event.transaction.hash,
     event.block.timestamp,
     event.params.value,
+    underlyingAmount,
     BigInt.fromI32(0) // zero fees on transfer
   );
 
@@ -305,6 +320,7 @@ function newTransaction(
   txhash: Bytes,
   timestamp: BigInt,
   amount: BigInt,
+  underlyingAmount: BigInt,
   fee: BigInt
 ): void {
   let transaction = new VaultTransaction(txid);
@@ -314,6 +330,7 @@ function newTransaction(
   transaction.txhash = txhash;
   transaction.timestamp = timestamp;
   transaction.amount = amount;
+  transaction.underlyingAmount = underlyingAmount || amount;
   transaction.fee = fee;
   transaction.save();
 }

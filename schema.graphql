@@ -65,6 +65,7 @@ type VaultTransaction @entity {
   txhash: Bytes!
   timestamp: BigInt!
   amount: BigInt!
+  underlyingAmount: BigInt! # Used to keep track with underlying amount of stake and unstake transaction
   fee: BigInt!
 }
 
