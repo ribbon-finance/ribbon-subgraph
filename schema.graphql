@@ -16,6 +16,10 @@ type Vault @entity {
   id: ID! # vault contract address
   name: String!
   symbol: String!
+  underlyingAsset: Bytes!
+  underlyingName: String!
+  underlyingSymbol: String!
+  underlyingDecimals: Int!
   totalPremiumEarned: BigInt!
   totalWithdrawalFee: BigInt!
   numDepositors: Int!

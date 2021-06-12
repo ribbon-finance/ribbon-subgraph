@@ -50,6 +50,9 @@ function newVault(vaultAddress: string): Vault {
   let optionsVaultContract = RibbonOptionsVault.bind(
     Address.fromString(vaultAddress)
   );
+  let underlyingAddress = optionsVaultContract.asset();
+  let otoken = Otoken.bind(underlyingAddress);
+
   vault.name = optionsVaultContract.name();
   vault.symbol = optionsVaultContract.symbol();
   vault.numDepositors = 0;
@@ -59,6 +62,10 @@ function newVault(vaultAddress: string): Vault {
   vault.cap = optionsVaultContract.cap();
   vault.totalBalance = optionsVaultContract.totalBalance();
   vault.lockedAmount = optionsVaultContract.lockedAmount();
+  vault.underlyingAsset = underlyingAddress;
+  vault.underlyingName = otoken.name();
+  vault.underlyingSymbol = otoken.symbol();
+  vault.underlyingDecimals = otoken.decimals();
   return vault;
 }
 

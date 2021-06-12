@@ -189,6 +189,42 @@ export class Vault extends Entity {
     this.set("symbol", Value.fromString(value));
   }
 
+  get underlyingAsset(): Bytes {
+    let value = this.get("underlyingAsset");
+    return value.toBytes();
+  }
+
+  set underlyingAsset(value: Bytes) {
+    this.set("underlyingAsset", Value.fromBytes(value));
+  }
+
+  get underlyingName(): string {
+    let value = this.get("underlyingName");
+    return value.toString();
+  }
+
+  set underlyingName(value: string) {
+    this.set("underlyingName", Value.fromString(value));
+  }
+
+  get underlyingSymbol(): string {
+    let value = this.get("underlyingSymbol");
+    return value.toString();
+  }
+
+  set underlyingSymbol(value: string) {
+    this.set("underlyingSymbol", Value.fromString(value));
+  }
+
+  get underlyingDecimals(): i32 {
+    let value = this.get("underlyingDecimals");
+    return value.toI32();
+  }
+
+  set underlyingDecimals(value: i32) {
+    this.set("underlyingDecimals", Value.fromI32(value));
+  }
+
   get totalPremiumEarned(): BigInt {
     let value = this.get("totalPremiumEarned");
     return value.toBigInt();

@@ -54,6 +54,7 @@ export function triggerBalanceUpdate(
 
   let vault = Vault.load(vaultID);
   vault.totalBalance = vaultContract.totalBalance();
+  vault.lockedAmount = vaultContract.lockedAmount();
   vault.save();
 
   if (vaultAccount == null) {
