@@ -243,6 +243,15 @@ export class Vault extends Entity {
     this.set("totalBalance", Value.fromBigInt(value));
   }
 
+  get lockedAmount(): BigInt {
+    let value = this.get("lockedAmount");
+    return value.toBigInt();
+  }
+
+  set lockedAmount(value: BigInt) {
+    this.set("lockedAmount", Value.fromBigInt(value));
+  }
+
   get cap(): BigInt {
     let value = this.get("cap");
     return value.toBigInt();

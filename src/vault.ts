@@ -58,6 +58,7 @@ function newVault(vaultAddress: string): Vault {
   vault.totalWithdrawalFee = BigInt.fromI32(0);
   vault.cap = optionsVaultContract.cap();
   vault.totalBalance = optionsVaultContract.totalBalance();
+  vault.lockedAmount = optionsVaultContract.lockedAmount();
   return vault;
 }
 
