@@ -71,9 +71,7 @@ export function triggerBalanceUpdate(
     "-" +
     updateCounter.toString();
 
-  const balanceCallResult = vaultContract.try_accountVaultBalance(
-    accountAddress
-  );
+  let balanceCallResult = vaultContract.try_accountVaultBalance(accountAddress);
 
   if (!balanceCallResult.reverted) {
     let stakeBalance =

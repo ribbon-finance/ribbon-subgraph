@@ -261,7 +261,7 @@ export function handleTransfer(event: Transfer): void {
    */
   let underlyingAmount = event.params.value;
   if (type === "stake" || type === "unstake") {
-    const vaultContract = RibbonOptionsVault.bind(event.address);
+    let vaultContract = RibbonOptionsVault.bind(event.address);
     underlyingAmount =
       (event.params.value * vaultContract.totalBalance()) /
       vaultContract.totalSupply();
