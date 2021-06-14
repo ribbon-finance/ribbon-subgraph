@@ -158,27 +158,3 @@ dataSources:
       eventHandlers:
         - event: Swap(indexed uint256,uint256,indexed address,uint256,uint256,address,indexed address,uint256,uint256,address,address,uint256,uint256,address)
           handler: handleSwap
-templates:
-  - kind: ethereum/contract
-    name: Instrument
-    network: mainnet
-    source:
-      abi: Instrument
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - InstrumentPosition
-      abis:
-        - name: Instrument
-          file: ./abis/Instrument.json
-      eventHandlers:
-        - event: Exercised(indexed address,indexed uint256,uint256,bool[])
-          handler: handleExercisePosition
-      callHandlers:
-        - function: buyInstrument(string[],uint8[],uint256,uint256[],bytes[])
-          handler: oldHandleBuyInstrument
-        - function: buyInstrument((uint8,uint8,address,uint256,uint256,uint256,uint256,uint256,bytes,bytes))
-          handler: handleBuyInstrument
-      file: ./src/instrument.ts
