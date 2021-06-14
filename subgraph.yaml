@@ -3,30 +3,6 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: RibbonFactory
-    network: mainnet
-    source:
-      address: "0x863dd8Ea9B7472c54CdE1F0e2D5B2bCC8CBf0Cd1"
-      abi: RibbonFactory
-      startBlock: 11726369
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/factory.ts
-      entities:
-        - Instrument
-      abis:
-        - name: RibbonFactory
-          file: ./abis/RibbonFactory.json
-        - name: Instrument
-          file: ./abis/Instrument.json
-      eventHandlers:
-        - event: InstrumentCreated(string,indexed address)
-          handler: handleNewInstrument
-        - event: InstrumentCreated(string,indexed address,indexed address)
-          handler: deprecatedHandleNewInstrument
-  - kind: ethereum/contract
     name: RibbonETHCoveredCall
     network: mainnet
     source:
@@ -158,3 +134,99 @@ dataSources:
       eventHandlers:
         - event: Swap(indexed uint256,uint256,indexed address,uint256,uint256,address,indexed address,uint256,uint256,address,address,uint256,uint256,address)
           handler: handleSwap
+  - kind: ethereum/contract
+    name: RibbonETHCallLiquidityMining
+    network: mainnet
+    source:
+      address: "0xd46f9546ebAbAAC44DC1B6D0Ac1eeb357D34FBeB"
+      abi: RibbonStakingRewards
+      startBlock: 12632454
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+  - kind: ethereum/contract
+    name: RibbonWBTCCallLiquidityMining
+    network: mainnet
+    source:
+      address: "0x1d27a3A92330693B897db9B1C26290Ba381049b1"
+      abi: RibbonStakingRewards
+      startBlock: 12632497
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+  - kind: ethereum/contract
+    name: RibbonETHPutLiquidityMining
+    network: mainnet
+    source:
+      address: "0xe79734461499246b6A8C8e768B96bebd0C891f63"
+      abi: RibbonStakingRewards
+      startBlock: 12632353
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mining.ts
+      entities:
+        - VaultLiquidityMiningPool
+        - VaultLiquidityMiningPoolAccount
+      abis:
+        - name: RibbonStakingRewards
+          file: ./abis/RibbonStakingRewards.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+        - event: RewardPaid(indexed address,uint256)
+          handler: handleRewardPaid
+  - kind: ethereum/contract
+    name: RibbonToken
+    network: mainnet
+    source:
+      address: "0x6123B0049F904d730dB3C36a31167D9d4121fA6B"
+      abi: ERC20
+      startBlock: 12497174
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/token.ts
+      entities:
+        - ERC20Token
+        - ERC20TokenAccount
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
