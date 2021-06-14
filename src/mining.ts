@@ -35,7 +35,7 @@ function updateVaultLiquidityMiningAccountBalance(
   userAddress: Address,
   poolAccount: VaultLiquidityMiningPoolAccount
 ): void {
-  const poolContract = RibbonStakingRewards.bind(poolAddress);
+  let poolContract = RibbonStakingRewards.bind(poolAddress);
 
   let callResult = poolContract.try_balanceOf(userAddress);
 
@@ -49,7 +49,7 @@ function updateVaultLiquidityMiningBalance(
   poolAddress: Address,
   pool: VaultLiquidityMiningPool
 ): void {
-  const poolContract = RibbonStakingRewards.bind(poolAddress);
+  let poolContract = RibbonStakingRewards.bind(poolAddress);
 
   pool.totalSupply = poolContract.totalSupply();
   pool.save();
@@ -57,8 +57,8 @@ function updateVaultLiquidityMiningBalance(
 
 export function handleStaked(event: Staked): void {
   let poolAddress = event.address.toHexString();
-  const pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
-  const poolAccount = getOrCreateLiquidityMiningPoolAccount(
+  let pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
+  let poolAccount = getOrCreateLiquidityMiningPoolAccount(
     event.address,
     event.params.user,
     pool
@@ -75,8 +75,8 @@ export function handleStaked(event: Staked): void {
 
 export function handleWithdrawn(event: Withdrawn): void {
   let poolAddress = event.address.toHexString();
-  const pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
-  const poolAccount = getOrCreateLiquidityMiningPoolAccount(
+  let pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
+  let poolAccount = getOrCreateLiquidityMiningPoolAccount(
     event.address,
     event.params.user,
     pool
@@ -93,8 +93,8 @@ export function handleWithdrawn(event: Withdrawn): void {
 
 export function handleRewardPaid(event: RewardPaid): void {
   let poolAddress = event.address.toHexString();
-  const pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
-  const poolAccount = getOrCreateLiquidityMiningPoolAccount(
+  let pool = getOrCreateVaultLiquidityMiningPool(poolAddress);
+  let poolAccount = getOrCreateLiquidityMiningPoolAccount(
     event.address,
     event.params.user,
     pool

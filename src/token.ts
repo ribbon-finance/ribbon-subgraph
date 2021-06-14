@@ -24,7 +24,7 @@ function updateTokenAccountBalance(
   userAddress: Address,
   tokenAccount: ERC20TokenAccount
 ): void {
-  const tokenContract = ERC20.bind(tokenAddress);
+  let tokenContract = ERC20.bind(tokenAddress);
 
   let callResult = tokenContract.try_balanceOf(userAddress);
 
@@ -36,13 +36,13 @@ function updateTokenAccountBalance(
 
 export function handleTransfer(event: Transfer): void {
   let tokenAddress = event.address.toHexString();
-  const token = getOrCreateToken(tokenAddress);
-  const senderTokenAccount = getOrCreateTokenAccount(
+  let token = getOrCreateToken(tokenAddress);
+  let senderTokenAccount = getOrCreateTokenAccount(
     event.address,
     event.params.from,
     token
   );
-  const receiverTokenAccount = getOrCreateTokenAccount(
+  let receiverTokenAccount = getOrCreateTokenAccount(
     event.address,
     event.params.to,
     token
