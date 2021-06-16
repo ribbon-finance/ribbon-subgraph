@@ -2,7 +2,7 @@ import { Address, dataSource } from "@graphprotocol/graph-ts";
 
 export const isMiningPool = (address: Address): boolean => {
   let miningPoolAddresses: string[] =
-    dataSource.network() === "mainnet"
+    dataSource.network() == "mainnet"
       ? [
           "0xd46f9546ebAbAAC44DC1B6D0Ac1eeb357D34FBeB",
           "0x1d27a3A92330693B897db9B1C26290Ba381049b1",
