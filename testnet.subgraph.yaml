@@ -41,7 +41,7 @@ dataSources:
     name: RibbonWBTCCoveredCall
     network: kovan
     source:
-      address: "0xB0204738a785B2f788B55A4f7da2F74bB0a84245"
+      address: "0x06ec862721C6A376B62D9718040e418ECedfDa1a"
       abi: RibbonOptionsVault
       startBlock: 24547229
     mapping:
@@ -76,7 +76,7 @@ dataSources:
     name: RibbonETHPutVault
     network: kovan
     source:
-      address: "0xd58EFBFF4277335D9d8aBaF0658c95D250DE484A"
+      address: "0xA7A9F92765Cab4e0d4Db0622210bc4cBC95DbF4d"
       abi: RibbonOptionsVault
       startBlock: 24807977
     mapping:
@@ -111,7 +111,7 @@ dataSources:
     name: RibbonWBTCPutVault
     network: kovan
     source:
-      address: "0x18B2Eddc35a48fa2c33DbeA1Db0485867F831853"
+      address: "0x568719E3C31026A8239540173765dEb23B64c5E3"
       abi: RibbonOptionsVault
       startBlock: 24807968
     mapping:
