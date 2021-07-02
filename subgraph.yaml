@@ -108,6 +108,41 @@ dataSources:
         - event: CapSet(uint256,uint256,address)
           handler: handleCapSet
   - kind: ethereum/contract
+    name: RibbonYearnETHPut
+    network: mainnet
+    source:
+      address: "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f"
+      abi: RibbonOptionsVault
+      startBlock: 12696707
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSet
+  - kind: ethereum/contract
     name: Airswap
     network: mainnet
     source:

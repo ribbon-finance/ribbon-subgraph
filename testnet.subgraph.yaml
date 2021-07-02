@@ -43,7 +43,7 @@ dataSources:
     source:
       address: "0x06ec862721C6A376B62D9718040e418ECedfDa1a"
       abi: RibbonOptionsVault
-      startBlock: 24547229
+      startBlock: 25812982
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -78,7 +78,7 @@ dataSources:
     source:
       address: "0xA7A9F92765Cab4e0d4Db0622210bc4cBC95DbF4d"
       abi: RibbonOptionsVault
-      startBlock: 24807977
+      startBlock: 25797849
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -113,7 +113,42 @@ dataSources:
     source:
       address: "0x568719E3C31026A8239540173765dEb23B64c5E3"
       abi: RibbonOptionsVault
-      startBlock: 24807968
+      startBlock: 25797262
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSet
+  - kind: ethereum/contract
+    name: RibbonYearnETHPut
+    network: kovan
+    source:
+      address: "0x526624Ac3b2d409816fB95D49a9512e5674b052e"
+      abi: RibbonOptionsVault
+      startBlock: 25609009
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
