@@ -372,6 +372,15 @@ export class VaultShortPosition extends Entity {
     }
   }
 
+  get mintAmount(): BigInt {
+    let value = this.get("mintAmount");
+    return value.toBigInt();
+  }
+
+  set mintAmount(value: BigInt) {
+    this.set("mintAmount", Value.fromBigInt(value));
+  }
+
   get loss(): BigInt | null {
     let value = this.get("loss");
     if (value === null || value.kind == ValueKind.NULL) {

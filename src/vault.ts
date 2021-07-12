@@ -23,24 +23,37 @@ import {
   triggerBalanceUpdate
 } from "./accounts";
 import { isMiningPool } from "./data/constant";
+import { getOtokenMintAmount } from "./utils";
 
 export function handleOpenShort(event: OpenShort): void {
   let optionAddress = event.params.options;
 
   let shortPosition = new VaultShortPosition(optionAddress.toHexString());
 
+  let otoken = Otoken.bind(optionAddress);
+  shortPosition.expiry = otoken.expiryTimestamp();
+  let strikePrice = otoken.strikePrice();
+  let isPut = otoken.isPut();
+  shortPosition.strikePrice = strikePrice;
+
+  let collateral = Otoken.bind(otoken.collateralAsset());
+  let collateralDecimals = collateral.decimals() as u8;
+
   let vaultAddress = event.address.toHexString();
   shortPosition.vault = vaultAddress;
   shortPosition.option = optionAddress;
   shortPosition.depositAmount = event.params.depositAmount;
+  shortPosition.mintAmount = isPut
+    ? getOtokenMintAmount(
+        event.params.depositAmount,
+        strikePrice,
+        collateralDecimals
+      )
+    : event.params.depositAmount;
   shortPosition.initiatedBy = event.params.manager;
   shortPosition.openedAt = event.block.timestamp;
   shortPosition.premiumEarned = BigInt.fromI32(0);
   shortPosition.openTxhash = event.transaction.hash;
-
-  let otoken = Otoken.bind(optionAddress);
-  shortPosition.expiry = otoken.expiryTimestamp();
-  shortPosition.strikePrice = otoken.strikePrice();
 
   shortPosition.save();
 }
