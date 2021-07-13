@@ -14,10 +14,16 @@ function wdiv(x: BigInt, y: BigInt): BigInt {
 export function getOtokenMintAmount(
   depositAmount: BigInt,
   strikePrice: BigInt,
-  collateralDecimals: u8
+  collateralDecimals: u8,
+  isPut: bool
 ): BigInt {
-  return wdiv(
-    depositAmount.times(OTOKEN_DECIMALS),
-    strikePrice.times(SCALE_DECIMALS)
-  ).div(BigInt.fromI32(10).pow(collateralDecimals));
+  if (isPut) {
+    return wdiv(
+      depositAmount.times(OTOKEN_DECIMALS),
+      strikePrice.times(SCALE_DECIMALS)
+    ).div(BigInt.fromI32(10).pow(collateralDecimals));
+  }
+
+  let scaleByDecimals = BigInt.fromI32(10).pow(collateralDecimals - 8);
+  return depositAmount.div(scaleByDecimals);
 }

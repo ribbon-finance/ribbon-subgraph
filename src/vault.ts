@@ -43,13 +43,12 @@ export function handleOpenShort(event: OpenShort): void {
   shortPosition.vault = vaultAddress;
   shortPosition.option = optionAddress;
   shortPosition.depositAmount = event.params.depositAmount;
-  shortPosition.mintAmount = isPut
-    ? getOtokenMintAmount(
-        event.params.depositAmount,
-        strikePrice,
-        collateralDecimals
-      )
-    : event.params.depositAmount;
+  shortPosition.mintAmount = getOtokenMintAmount(
+    event.params.depositAmount,
+    strikePrice,
+    collateralDecimals,
+    isPut
+  );
   shortPosition.initiatedBy = event.params.manager;
   shortPosition.openedAt = event.block.timestamp;
   shortPosition.premiumEarned = BigInt.fromI32(0);
