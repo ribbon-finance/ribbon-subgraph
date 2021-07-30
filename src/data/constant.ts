@@ -24,3 +24,13 @@ export const isMiningPool = (address: Address): boolean => {
 
   return false;
 };
+
+export const getThetaVaultFromYearn = (symbol: string): string => {
+  if (symbol == "yvUSDC" || symbol == "yvusdc") {
+    return dataSource.network() == "mainnet"
+      ? "0x8FE74471F198E426e96bE65f40EeD1F8BA96e54f"
+      : "0x526624Ac3b2d409816fB95D49a9512e5674b052e";
+  }
+
+  return "";
+};
