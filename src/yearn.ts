@@ -1,11 +1,14 @@
 import { Address } from "@graphprotocol/graph-ts";
-import { UpdateRewards, YearnVault } from "../generated/yvUSDC/YearnVault";
+import {
+  Harvested,
+  YearnStrategyHarvest
+} from "../generated/YearnStrategy/YearnStrategyHarvest";
 import { refreshAllAccountBalances } from "./accounts";
-import { getThetaVaultFromYearn } from "./data/constant";
+import { getThetaVaultFromYearnStrategy } from "./data/constant";
 
-export function handleUpdateReward(event: UpdateRewards): void {
-  let yearnVault = YearnVault.bind(event.address);
-  let vaultAddress = getThetaVaultFromYearn(yearnVault.symbol());
+export function handleUpdateReward(event: Harvested): void {
+  let yearnVault = YearnStrategyHarvest.bind(event.address);
+  let vaultAddress = getThetaVaultFromYearnStrategy(yearnVault.name());
 
   refreshAllAccountBalances(
     Address.fromString(vaultAddress),

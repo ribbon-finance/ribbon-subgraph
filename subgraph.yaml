@@ -266,12 +266,12 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
   - kind: ethereum/contract
-    name: yvUSDC
+    name: StrategyIdleidleUSDCYield
     network: mainnet
     source:
-      address: "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9"
-      abi: YearnVault
-      startBlock: 11674456
+      address: "0x2E1ad896D3082C52A5AE7Af307131DE7a37a46a0"
+      abi: YearnStrategyHarvest
+      startBlock: 12696707
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -282,8 +282,118 @@ dataSources:
         - VaultAccount
         - BalanceUpdate
       abis:
-        - name: YearnVault
-          file: ./abis/YearnVault.json
+        - name: YearnStrategyHarvest
+          file: ./abis/YearnStrategyHarvest.json
       eventHandlers:
-        - event: UpdateRewards(address)
+        - event: Harvested(uint256,uint256,uint256,uint256)
+          handler: handleUpdateReward
+  - kind: ethereum/contract
+    name: StrategyGenericLevCompFarm
+    network: mainnet
+    source:
+      address: "0xE6c78b85f93c25B8EE7d963fD15d1d53a00F5908"
+      abi: YearnStrategyHarvest
+      startBlock: 12696707
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/yearn.ts
+      entities:
+        - Vault
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: YearnStrategyHarvest
+          file: ./abis/YearnStrategyHarvest.json
+      eventHandlers:
+        - event: Harvested(uint256,uint256,uint256,uint256)
+          handler: handleUpdateReward
+  - kind: ethereum/contract
+    name: PoolTogether USD Coin
+    network: mainnet
+    source:
+      address: "0x387fCa8d7e2e09655b4F49548607B55C0580fC63"
+      abi: YearnStrategyHarvest
+      startBlock: 12696707
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/yearn.ts
+      entities:
+        - Vault
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: YearnStrategyHarvest
+          file: ./abis/YearnStrategyHarvest.json
+      eventHandlers:
+        - event: Harvested(uint256,uint256,uint256,uint256)
+          handler: handleUpdateReward
+  - kind: ethereum/contract
+    name: StrategyRook USD Coin
+    network: mainnet
+    source:
+      address: "0x2B1a6CB0168aA540ee8D853aB1d10d7A89d6351b"
+      abi: YearnStrategyHarvest
+      startBlock: 12696707
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/yearn.ts
+      entities:
+        - Vault
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: YearnStrategyHarvest
+          file: ./abis/YearnStrategyHarvest.json
+      eventHandlers:
+        - event: Harvested(uint256,uint256,uint256,uint256)
+          handler: handleUpdateReward
+  - kind: ethereum/contract
+    name: StrategyAH2EarncyUSDC
+    network: mainnet
+    source:
+      address: "0x86Aa49bf28d03B1A4aBEb83872cFC13c89eB4beD"
+      abi: YearnStrategyHarvest
+      startBlock: 12696707
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/yearn.ts
+      entities:
+        - Vault
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: YearnStrategyHarvest
+          file: ./abis/YearnStrategyHarvest.json
+      eventHandlers:
+        - event: Harvested(uint256,uint256,uint256,uint256)
+          handler: handleUpdateReward
+  - kind: ethereum/contract
+    name: SingleSidedCrvUSDC
+    network: mainnet
+    source:
+      address: "0x80af28cb1e44C44662F144475d7667C9C0aaB3C3"
+      abi: YearnStrategyHarvest
+      startBlock: 12696707
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/yearn.ts
+      entities:
+        - Vault
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: YearnStrategyHarvest
+          file: ./abis/YearnStrategyHarvest.json
+      eventHandlers:
+        - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
