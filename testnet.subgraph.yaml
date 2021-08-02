@@ -325,26 +325,3 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-  - kind: ethereum/contract
-    name: yvUSDC
-    network: kovan
-    source:
-      address: "0x9d54311cCaA9C0d4ee6BD60cB82A40F4B942c8b3"
-      abi: YearnVault
-      startBlock: 25608628
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/yearn.ts
-      entities:
-        - Vault
-        - VaultAccount
-        - BalanceUpdate
-      abis:
-        - name: YearnVault
-          file: ./abis/YearnVault.json
-      eventHandlers:
-        - event: UpdateRewards(address)
-          handler: handleUpdateReward
-      
