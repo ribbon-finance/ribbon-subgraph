@@ -284,6 +284,8 @@ dataSources:
       abis:
         - name: YearnStrategyHarvest
           file: ./abis/YearnStrategyHarvest.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
@@ -306,6 +308,8 @@ dataSources:
       abis:
         - name: YearnStrategyHarvest
           file: ./abis/YearnStrategyHarvest.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
@@ -328,6 +332,8 @@ dataSources:
       abis:
         - name: YearnStrategyHarvest
           file: ./abis/YearnStrategyHarvest.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
@@ -350,6 +356,8 @@ dataSources:
       abis:
         - name: YearnStrategyHarvest
           file: ./abis/YearnStrategyHarvest.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
@@ -372,6 +380,8 @@ dataSources:
       abis:
         - name: YearnStrategyHarvest
           file: ./abis/YearnStrategyHarvest.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
@@ -394,6 +404,8 @@ dataSources:
       abis:
         - name: YearnStrategyHarvest
           file: ./abis/YearnStrategyHarvest.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
       eventHandlers:
         - event: Harvested(uint256,uint256,uint256,uint256)
           handler: handleUpdateReward
