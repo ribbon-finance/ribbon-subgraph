@@ -804,6 +804,15 @@ export class VaultAccount extends Entity {
     this.set("totalBalance", Value.fromBigInt(value));
   }
 
+  get shares(): BigInt {
+    let value = this.get("shares");
+    return value.toBigInt();
+  }
+
+  set shares(value: BigInt) {
+    this.set("shares", Value.fromBigInt(value));
+  }
+
   get totalStakedShares(): BigInt {
     let value = this.get("totalStakedShares");
     return value.toBigInt();

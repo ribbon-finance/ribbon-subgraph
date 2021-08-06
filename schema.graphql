@@ -83,6 +83,7 @@ type VaultAccount @entity {
   totalYieldEarned: BigInt! # Account's lifetime yield earned from the vault
   totalDeposits: BigInt! # Account's total deposits into the vault (Withdrawal as accounted)
   totalBalance: BigInt! # To track the current balance, so we can caluclate the net profit/loss
+  shares: BigInt!
   totalStakedShares: BigInt!
   totalStakedBalance: BigInt!
 }
