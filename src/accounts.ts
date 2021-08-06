@@ -33,6 +33,7 @@ export function refreshAllAccountBalances(
           timestamp,
           true,
           false,
+          false,
           totalBalance,
           totalSupply
         );
@@ -62,6 +63,7 @@ export function triggerBalanceUpdate(
     timestamp,
     accruesYield,
     isWithdraw,
+    true,
     totalBalance,
     totalSupply
   );
@@ -73,6 +75,7 @@ export function _triggerBalanceUpdate(
   timestamp: i32,
   accruesYield: bool,
   isWithdraw: bool,
+  isRefresh: bool,
   totalBalance: BigInt,
   totalSupply: BigInt
 ): void {
@@ -98,54 +101,63 @@ export function _triggerBalanceUpdate(
     "-" +
     updateCounter.toString();
 
-  let balanceCallResult = vaultContract.try_accountVaultBalance(accountAddress);
+  let accountBalance: BigInt;
 
-  if (!balanceCallResult.reverted) {
-    let stakeBalance =
-      (vaultAccount.totalStakedShares * totalBalance) / totalSupply;
-    let balance = balanceCallResult.value + stakeBalance;
-    let update = new BalanceUpdate(updateID);
-    update.vault = vaultID;
-    update.account = accountAddress;
-    update.timestamp = timestamp;
-    update.balance = balance;
-    update.yieldEarned = BigInt.fromI32(0);
-    update.isWithdraw = isWithdraw;
-    update.stakedBalance = stakeBalance;
+  if (isRefresh) {
+    let balanceCallResult = vaultContract.try_accountVaultBalance(
+      accountAddress
+    );
+    if (balanceCallResult.reverted) {
+      log.error("calling accountVaultBalance({}) on vault {}", [
+        accountAddress.toHexString(),
+        vaultAddress.toHexString()
+      ]);
+      return;
+    }
+    accountBalance = balanceCallResult.value;
+  } else {
+    accountBalance = (vaultAccount.totalBalance * totalBalance) / totalSupply;
+  }
 
-    if (accruesYield) {
-      let prevUpdateID =
-        vaultAddress.toHexString() +
-        "-" +
-        accountAddress.toHexString() +
-        "-" +
-        prevUpdateCounter.toString();
+  let stakeBalance =
+    (vaultAccount.totalStakedShares * totalBalance) / totalSupply;
+  let balance = accountBalance + stakeBalance;
+  let update = new BalanceUpdate(updateID);
+  update.vault = vaultID;
+  update.account = accountAddress;
+  update.timestamp = timestamp;
+  update.balance = balance;
+  update.yieldEarned = BigInt.fromI32(0);
+  update.isWithdraw = isWithdraw;
+  update.stakedBalance = stakeBalance;
 
-      let prevUpdate = BalanceUpdate.load(prevUpdateID);
-      if (prevUpdate != null) {
-        let yieldEarned = balance.minus(prevUpdate.balance);
+  if (accruesYield) {
+    let prevUpdateID =
+      vaultAddress.toHexString() +
+      "-" +
+      accountAddress.toHexString() +
+      "-" +
+      prevUpdateCounter.toString();
 
-        if (yieldEarned.gt(BigInt.fromI32(0))) {
-          update.yieldEarned = yieldEarned;
-          vaultAccount.totalYieldEarned = vaultAccount.totalYieldEarned.plus(
-            yieldEarned
-          );
-        }
+    let prevUpdate = BalanceUpdate.load(prevUpdateID);
+    if (prevUpdate != null) {
+      let yieldEarned = balance.minus(prevUpdate.balance);
+
+      if (yieldEarned.gt(BigInt.fromI32(0))) {
+        update.yieldEarned = yieldEarned;
+        vaultAccount.totalYieldEarned = vaultAccount.totalYieldEarned.plus(
+          yieldEarned
+        );
       }
     }
-
-    update.save();
-
-    vaultAccount.updateCounter = updateCounter;
-    vaultAccount.totalStakedBalance = stakeBalance;
-    vaultAccount.totalBalance = balance;
-    vaultAccount.save();
-  } else {
-    log.error("calling accountVaultBalance({}) on vault {}", [
-      accountAddress.toHexString(),
-      vaultAddress.toHexString()
-    ]);
   }
+
+  update.save();
+
+  vaultAccount.updateCounter = updateCounter;
+  vaultAccount.totalStakedBalance = stakeBalance;
+  vaultAccount.totalBalance = balance;
+  vaultAccount.save();
 }
 
 export function createVaultAccount(
