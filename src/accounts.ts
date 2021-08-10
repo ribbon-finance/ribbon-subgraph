@@ -80,9 +80,7 @@ export function _triggerBalanceUpdate(
   totalSupply: BigInt
 ): void {
   let vaultID = vaultAddress.toHexString();
-
   let vaultContract = RibbonOptionsVault.bind(vaultAddress);
-
   let vaultAccount = VaultAccount.load(
     vaultAddress.toHexString() + "-" + accountAddress.toHexString()
   );
@@ -93,7 +91,6 @@ export function _triggerBalanceUpdate(
 
   let prevUpdateCounter = vaultAccount.updateCounter;
   let updateCounter = prevUpdateCounter + 1;
-
   let updateID =
     vaultAddress.toHexString() +
     "-" +
@@ -103,6 +100,10 @@ export function _triggerBalanceUpdate(
 
   let shares: BigInt;
 
+  /**
+   * If isRefresh, we proceed with getting new share amount from contract
+   * Otherwise, in the case where there is no movement in shares, we will merely get back the sahres from vaultAccount
+   */
   if (isRefresh) {
     let balanceCallResult = vaultContract.try_balanceOf(accountAddress);
     if (balanceCallResult.reverted) {
@@ -117,6 +118,9 @@ export function _triggerBalanceUpdate(
     shares = vaultAccount.shares;
   }
 
+  /**
+   * Calculate new account balance based on shares
+   */
   let accountBalance = (shares * totalBalance) / totalSupply;
   let stakeBalance =
     (vaultAccount.totalStakedShares * totalBalance) / totalSupply;

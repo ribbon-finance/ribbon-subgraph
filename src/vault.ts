@@ -228,6 +228,15 @@ export function handleWithdraw(event: Withdraw): void {
   );
 }
 
+/**
+ * We have two types of transfer
+ *
+ * Liquidity Mining
+ * In liquidity mining, we keep track of the amount as shares, and underlying as actual underlying amount
+ *
+ * Normal transfer
+ * We will store both underlying and amount as asset amount. In this case, the user transfer "underlying" instead of shares.
+ */
 export function handleTransfer(event: Transfer): void {
   // Just skip if it's a new deposit or withdrawal
   if (
@@ -255,8 +264,20 @@ export function handleTransfer(event: Transfer): void {
     "-" +
     event.transactionLogIndex.toString();
 
-  let senderVaultAccount = createVaultAccount(event.address, event.params.from);
+  /**
+   * Calculate underlying amount
+   * Staking: To be able to calculate USD value that had been staked
+   * Transfer: Transfer are always in the unit of underlying
+   */
+  let vaultContract = RibbonOptionsVault.bind(event.address);
+  let underlyingAmount =
+    (event.params.value * vaultContract.totalBalance()) /
+    vaultContract.totalSupply();
 
+  /**
+   * Record sender deposit/withdraw amount
+   */
+  let senderVaultAccount = createVaultAccount(event.address, event.params.from);
   switch (type as u32) {
     case "stake" as u32:
       senderVaultAccount.totalStakedShares =
@@ -264,35 +285,26 @@ export function handleTransfer(event: Transfer): void {
       break;
     default:
       senderVaultAccount.totalDeposits =
-        senderVaultAccount.totalDeposits - event.params.value;
+        senderVaultAccount.totalDeposits - underlyingAmount;
   }
   senderVaultAccount.save();
 
-  /**
-   * Calculate underlying amount
-   */
-  let underlyingAmount = event.params.value;
-  if (type === "stake" || type === "unstake") {
-    let vaultContract = RibbonOptionsVault.bind(event.address);
-    underlyingAmount =
-      (event.params.value * vaultContract.totalBalance()) /
-      vaultContract.totalSupply();
-  }
-
   newTransaction(
     txid + "-T", // Indicate transfer
-    type === "stake" ? "stake" : "transfer",
+    type == "stake" ? "stake" : "transfer",
     vaultAddress,
     event.params.from,
     event.transaction.hash,
     event.block.timestamp,
-    event.params.value,
+    type == "stake" ? event.params.value : underlyingAmount,
     underlyingAmount,
     BigInt.fromI32(0) // zero fees on transfer
   );
 
+  /**
+   * Record receiver deposit/withdraw amount
+   */
   let receiverVaultAccount = createVaultAccount(event.address, event.params.to);
-
   switch (type as u32) {
     case "unstake" as u32:
       receiverVaultAccount.totalStakedShares =
@@ -300,18 +312,18 @@ export function handleTransfer(event: Transfer): void {
       break;
     default:
       receiverVaultAccount.totalDeposits =
-        receiverVaultAccount.totalDeposits + event.params.value;
+        receiverVaultAccount.totalDeposits + underlyingAmount;
   }
   receiverVaultAccount.save();
 
   newTransaction(
     txid + "-R", // Indicate receive
-    type === "unstake" ? "unstake" : "receive",
+    type == "unstake" ? "unstake" : "receive",
     vaultAddress,
     event.params.to,
     event.transaction.hash,
     event.block.timestamp,
-    event.params.value,
+    type == "unstake" ? event.params.value : underlyingAmount,
     underlyingAmount,
     BigInt.fromI32(0) // zero fees on transfer
   );
