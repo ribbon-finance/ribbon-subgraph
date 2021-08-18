@@ -5,7 +5,8 @@ import {
   Deposit,
   Withdraw,
   Transfer,
-  CapSet
+  CapSet,
+  Migrate
 } from "../generated/RibbonOptionsVault/RibbonOptionsVault";
 import {
   Vault,
@@ -341,6 +342,60 @@ export function handleTransfer(event: Transfer): void {
     event.block.timestamp.toI32(),
     false,
     false
+  );
+}
+
+/**
+ *
+ * @param event In migrate, we treat it as transfer/withdraw
+ * @returns
+ */
+export function handleMigrate(event: Migrate): void {
+  let vaultAddress = event.address.toHexString();
+  let txid =
+    vaultAddress +
+    "-" +
+    event.transaction.hash.toHexString() +
+    "-" +
+    event.transactionLogIndex.toString();
+
+  /**
+   * Calculate underlying amount
+   * Staking: To be able to calculate USD value that had been staked
+   * Transfer: Transfer are always in the unit of underlying
+   */
+  let vaultContract = RibbonOptionsVault.bind(event.address);
+  let migrateAmount = event.params.amount;
+
+  /**
+   * Record sender deposit/withdraw amount
+   */
+  let senderVaultAccount = createVaultAccount(
+    event.address,
+    event.params.account
+  );
+  senderVaultAccount.totalDeposits =
+    senderVaultAccount.totalDeposits - migrateAmount;
+  senderVaultAccount.save();
+
+  newTransaction(
+    txid + "-T", // Indicate transfer
+    "migrate",
+    vaultAddress,
+    event.params.account,
+    event.transaction.hash,
+    event.block.timestamp,
+    migrateAmount,
+    migrateAmount,
+    BigInt.fromI32(0) // zero fees on transfer
+  );
+
+  triggerBalanceUpdate(
+    event.address,
+    event.params.account,
+    event.block.timestamp.toI32(),
+    false,
+    true
   );
 }
 
