@@ -1,0 +1,103 @@
+type Vault @entity {
+  id: ID! # vault contract address
+  name: String!
+  symbol: String!
+  underlyingAsset: Bytes!
+  underlyingName: String!
+  underlyingSymbol: String!
+  underlyingDecimals: Int!
+  totalPremiumEarned: BigInt!
+  numDepositors: Int!
+  depositors: [Bytes!]!
+  vaultAccounts: [VaultAccount!]! @derivedFrom(field: "vault")
+  totalBalance: BigInt!
+  cap: BigInt!
+}
+
+type VaultShortPosition @entity {
+  id: ID! # option contract address
+  vault: Vault!
+  option: Bytes!
+  depositAmount: BigInt!
+  withdrawAmount: BigInt
+  mintAmount: BigInt!
+  loss: BigInt
+  isExercised: Boolean
+  initiatedBy: Bytes!
+  strikePrice: BigInt!
+  expiry: BigInt!
+  openedAt: BigInt!
+  closedAt: BigInt
+  premiumEarned: BigInt!
+  openTxhash: Bytes!
+  closeTxhash: Bytes
+  trades: [VaultOptionTrade!]! @derivedFrom(field: "vaultShortPosition")
+}
+
+type GnosisAuction @entity {
+  id: ID! # auction ID
+  optionToken: Bytes! 
+}
+
+type VaultOptionTrade @entity {
+  id: ID! # optionToken-txhash-logindex
+  vault: Vault!
+  vaultShortPosition: VaultShortPosition!
+  sellAmount: BigInt!
+  premium: BigInt!
+  timestamp: BigInt!
+  txhash: Bytes!
+}
+
+type VaultTransaction @entity {
+  id: ID!
+  vault: Vault!
+  type: String!
+  address: Bytes!
+  txhash: Bytes!
+  timestamp: BigInt!
+  amount: BigInt!
+  underlyingAmount: BigInt! # Used to keep track with underlying amount of stake and unstake transaction
+  fee: BigInt!
+}
+
+type VaultAccount @entity {
+  id: ID! # vaultAddress-accountAddress
+  vault: Vault!
+  account: Bytes!
+  updateCounter: Int! # used internally to track BalanceUpdates
+  totalYieldEarned: BigInt! # Account's lifetime yield earned from the vault
+  totalDeposits: BigInt! # Account's total deposits into the vault (Withdrawal as accounted)
+  totalBalance: BigInt! # To track the current balance, so we can caluclate the net profit/loss
+  shares: BigInt!
+  totalStakedShares: BigInt!
+  totalStakedBalance: BigInt!
+}
+
+type BalanceUpdate @entity {
+  id: ID! # accountAddress-timestamp
+  vault: Vault!
+  account: Bytes!
+  timestamp: Int!
+  balance: BigInt! # Account's balance in the vault at a point in time
+  yieldEarned: BigInt! # Yield earned from a trade at a point in time
+  isWithdraw: Boolean!
+  stakedBalance: BigInt!
+}
+
+type ERC20Token @entity {
+  id: ID! # token contract address
+  name: String!
+  symbol: String!
+  numHolders: Int!
+  holders: [Bytes!]!
+  tokenAccounts: [ERC20TokenAccount!]! @derivedFrom(field: "token")
+  totalSupply: BigInt!
+}
+
+type ERC20TokenAccount @entity {
+  id: ID! # ERC20TokenID-accountAddress
+  token: ERC20Token!
+  balance: BigInt!
+  account: Bytes!
+}

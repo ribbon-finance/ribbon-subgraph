@@ -1,0 +1,136 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RibbonETHCoveredCall
+    network: kovan
+    source:
+      address: "0x6888cEaae27F1D66C4152082c186ed452E387FBB"
+      abi: RibbonOptionsVault
+      startBlock: 24547221
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSet
+  - kind: ethereum/contract
+    name: RibbonWBTCCoveredCall
+    network: kovan
+    source:
+      address: "0xa6C65B92E24C72D5935396532c2536f0ca30654f"
+      abi: RibbonOptionsVault
+      startBlock: 25812982
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSet
+  - kind: ethereum/contract
+    name: RibbonETHPutVault
+    network: kovan
+    source:
+      address: "0xc8B86C2dE51F124D99D783A11Be666E7c1Be2387"
+      abi: RibbonOptionsVault
+      startBlock: 26796272
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,uint256,uint256)
+          handler: handleWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: CapSet(uint256,uint256,address)
+          handler: handleCapSet
+  - kind: ethereum/contract
+    name: Airswap
+    network: kovan
+    source:
+      address: "0x79fb4604f2D7bD558Cda0DFADb7d61D98b28CA9f"
+      abi: Airswap
+      startBlock: 24547221
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultOptionTrade
+        - VaultTransaction
+        - VaultAccount
+        - BalanceUpdate
+      abis:
+        - name: Airswap
+          file: ./abis/Airswap.json
+        - name: RibbonOptionsVault
+          file: ./abis/RibbonOptionsVault.json
+      eventHandlers:
+        - event: Swap(indexed uint256,uint256,indexed address,uint256,uint256,address,indexed address,uint256,uint256,address,address,uint256,uint256,address)
+          handler: handleSwap
