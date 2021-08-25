@@ -33,9 +33,8 @@ function newVault(vaultAddress: string): Vault {
   let optionsVaultContract = RibbonThetaVault.bind(
     Address.fromString(vaultAddress)
   );
-  let vaultParams = optionsVaultContract.vaultParams();
-  let underlyingAddress = vaultParams[4]; //underlying asset
-  let otoken = Otoken.bind(Address.fromString(underlyingAddress));
+  let underlyingAddress = optionsVaultContract.vaultParams().value3;
+  let otoken = Otoken.bind(underlyingAddress);
 
   vault.name = optionsVaultContract.name();
   vault.symbol = optionsVaultContract.symbol();
@@ -44,7 +43,7 @@ function newVault(vaultAddress: string): Vault {
   vault.totalPremiumEarned = BigInt.fromI32(0);
   vault.cap = optionsVaultContract.cap();
   vault.totalBalance = optionsVaultContract.totalBalance();
-  vault.underlyingAsset = Bytes.fromI32(underlyingAddress);
+  vault.underlyingAsset = underlyingAddress;
   vault.underlyingName = otoken.name();
   vault.underlyingSymbol = otoken.symbol();
   vault.underlyingDecimals = otoken.decimals();
@@ -114,14 +113,17 @@ export function handleInitiateGnosisAuction(event: InitiateGnosisAuction): void 
 export function handleAuctionCleared(event: AuctionCleared): void {
   let auctionID = event.params.auctionId
   let auction = GnosisAuction.load(auctionID.toHexString())
+  if (auction == null) {
+    return;
+  }
+
   let optionToken = auction.optionToken;
   let shortPosition = VaultShortPosition.load(optionToken.toHexString());
-  let vault = Vault.load(shortPosition.vault);
-
-
   if (shortPosition == null) {
     return;
   }
+
+  let vault = Vault.load(shortPosition.vault);
   if (vault == null) {
     return;
   }
@@ -153,7 +155,7 @@ export function handleAuctionCleared(event: AuctionCleared): void {
   vault.totalPremiumEarned = vault.totalPremiumEarned.plus(totalPremium);
   vault.save();
 
-  refreshAllAccountBalances(Address.fromString(vault.id), event.block.timestamp.toI32());
+  refreshAllAccountBalances(Address.fromString(shortPosition.vault), event.block.timestamp.toI32());
 }
 
 export function handleDeposit(event: Deposit): void {

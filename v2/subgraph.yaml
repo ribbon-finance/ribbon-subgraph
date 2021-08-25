@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0x6888cEaae27F1D66C4152082c186ed452E387FBB"
       abi: RibbonThetaVault
-      startBlock: 24547221
+      startBlock: 26920346
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -45,7 +45,7 @@ dataSources:
     source:
       address: "0xa6C65B92E24C72D5935396532c2536f0ca30654f"
       abi: RibbonThetaVault
-      startBlock: 25812982
+      startBlock: 26920346
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -82,7 +82,7 @@ dataSources:
     source:
       address: "0xc8B86C2dE51F124D99D783A11Be666E7c1Be2387"
       abi: RibbonThetaVault
-      startBlock: 26796272
+      startBlock: 26920346
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -119,7 +119,7 @@ dataSources:
     source:
       address: "0x3D1D40101E185E1fE3aedCF05FE2F5BA0Af1f25D"
       abi: GnosisAuction
-      startBlock: 24547221
+      startBlock: 26920346
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
